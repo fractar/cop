@@ -1,0 +1,29 @@
+#Random seed initialisée avec une constante pour la reproductibilité des résultats
+set.seed(0);
+#echantillonnage dans -10;10
+x <- runif(300,  min=-10, max=10)
+ 
+#fonction objectif (supposée inconnue et à découvrir)  bruitée
+y <- 0.1*x^3 - 0.5 * x^2 - x + 10 + rnorm(length(x),0,5)
+ 
+# pour faire un "trou" dans l échantillonnage et se tester en prédiction
+sx <- x; sy <- y
+useOnly <- x<0 | x>5
+x <- x[useOnly]
+y <- y[useOnly]
+ 
+# Les données à prédire
+new <- data.frame(x = seq(-2, 6 , 0.5))
+ 
+# prediction (rappel : les données pour x dans 0;5 sont manquantes )
+predict( lm(y ~ x + I(x^2) + I(x^3)), new,  se.fit = T)
+pred.interval <- predict(lm(y ~ x + I(x^2) + I(x^3)), new, interval="prediction")
+pred.confiance <- predict(lm(y ~ x + I(x^2) + I(x^3)), new, interval="confidence")
+matplot(new$x,cbind(pred.confiance, pred.interval[,-1]),lwd = 2,
+ lty=c(1,2,2,3,3), col=c(1,4,4,3,3), type="l", ylab="predicted y")
+ 
+#la courbe idéale (en rouge)
+lines(new$x,0.1*new$x^3 - 0.5 * new$x^2 - new$x + 10, col = 2 )
+ 
+#avec les points présents dans les données (et non utilisés)
+points(sx,sy,col=rgb(0.3,0.4,0.1,0.5),pch=16);

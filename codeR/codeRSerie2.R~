@@ -1,0 +1,732 @@
+
+
+library(tseries)
+
+#--------------------------------------------------------------------------------------------------
+# Préparation des données
+#--------------------------------------------------------------------------------------------------
+
+# initialisation de la graine
+set.seed(2015)
+
+# chargement des données 
+data.src = read.csv2("./donnees/Donnees.csv",header=TRUE,sep=";",dec=".",stringsAsFactors=FALSE)
+
+# conversion des données en type numérique (hormis la colonne 1 correspondant au titre de la série)
+data = data.src
+data[,2:407] = sapply(data.src[,2:407],FUN=as.numeric)
+
+
+
+#--------------------------------------------------------------------------------------------------
+# SERIE 2 : Consommation totale de gaz naturel (en TWh PCS)
+#--------------------------------------------------------------------------------------------------
+
+# note :  "TWh PCS" signifie "en milliards de kWh pouvoir calorifique supérieur".
+
+# création de l’objet de type série temporelle
+
+serie2 <- ts((as.numeric(data[10,2:407])), start = c(1981,1), end = c(2014,10), frequency = 12)
+
+# 1) EXPLORATION
+#----------------
+
+# chronogramme
+t = time(serie2)
+reg <- lm(serie2 ~ I(t-1981))
+fit.ts = ts(reg$fit, start = c(t[1]), end = c(t[length(t)]), frequency = 12)
+#postscript("chrono2.ps")
+plot.ts(serie2,type="l",col='blue',xlab="Temps",ylab="Consommation totale de gaz naturel (en TWh PCS)")
+lines(fit.ts,col="grey")
+legend("topleft",col=c("blue","grey"),c("Valeurs de la série","Régression linéaire simple"),lty=c(1,1))
+#dev.off()
+
+# chronogramme du logarithme de la série
+#postscript("logchrono2.ps")
+plot.ts(log(serie2),type="l",col='blue',xlab="Temps",ylab="Logarithme de la consommation totale de gaz naturel")
+#dev.off()
+
+# statistiques
+summary(serie2)
+ind.min = which.min(serie2)
+ind.max = which.max(serie2)
+t.serie2 = time(serie2)
+cat('temps où la consommation totale de gaz naturel est minimale : ', t.serie2[ind.min], '\n')
+cat('temps où la consommation totale de gaz naturel est maximale : ', t.serie2[ind.max], '\n')
+
+# zoom sur la période 01/2004 - 01/2014
+#postscript("zoom_012004_012014_serie2.ps")
+plot.ts(window(serie2,start=c(2004,1),end=c(2014,1)),xlab="année",ylab="Consommation totale de gaz naturel (en TWh PCS)",col='blue')
+abline(v=seq(2004,2014,1),lwd=1,lty=2)
+#dev.off()
+
+# décomposition de la série en tendance, saisonnalité et erreur 
+# par decompose()
+#postscript("decompose_serie2.ps")
+dec.serie2 = decompose(serie2)
+plot(dec.serie2)
+#dev.off()
+# par méthode STL
+stl.serie2 = decompose(serie2)
+plot(stl.serie2)
+
+# month plot
+#postscript("monthplot2.ps")
+monthplot(serie2, xlab = "mois", ylab="Consommation totale de gaz naturel (en TWh PCS)",main="Month plot",cex.main=1)
+#dev.off()
+
+# lag plots pour 12 retards
+#postscript("lagplot2.ps")
+lag.plot(rev(serie2),set.lags=1:12,asp=1,diag=TRUE,diag.col="red",type="p",do.lines=FALSE)
+#dev.off()
+
+
+
+# 2) MODELISATION
+#-----------------
+
+
+
+# Méthode X11  (désaisonnalisation par méthode des moyennes mobiles) [Shiskin, Young et Musgrave (1967)]
+#_________________________________________________________________________________________________________
+
+
+serie = log(serie2)
+
+
+# Première estimation de la tendance par moyenne mobile 2x12
+coefsM0 = (1/12) * c(1/2,rep(1,11),1/2)
+m_t = filter(serie,coefsM0)
+
+# Première estimation de la série diminuée de sa tendance
+serie_sans_trend = serie - m_t
+
+# Première estimation de la saisonnalité par moyenne mobile 3x3 
+coefsM1 = (1/9) * c(1,2,3,2,1)
+s_t = filter(serie_sans_trend,coefsM1)
+e_t = serie_sans_trend - s_t
+
+# Normalisation des coefficents saisonniers par moyenne mobile 2x12
+s_t = s_t - filter(s_t,coefsM0)
+
+# Première estimation de la série corrigée des variations saisonnières (CVS)
+serie.CVS = serie - s_t
+
+# Seconde estimation de la tendance par moyenne mobile de Henderson à 13 termes
+#Henderson à 9 termes
+#coefsM2 = (1/2431) * c(-99,-24,288,648,805,648,288,-24,-99)
+#Henderson à 13 termes
+coefsM2 = (1/16796) * c(-325,-468,0,1100,2475,3600,4032,3600,2475,1100,0,-468,-325)
+#Henderson à 15 termes
+#coefsM2 = (1/193154) * c(-2652,-3732,-2730,3641,16016,28182,37422,40860,37422,28182,16016,3641,-2730,-3732,-2652)
+
+m_t = filter(serie.CVS,coefsM2)
+
+# Seconde estimation de la série diminuée de sa tendance
+serie_sans_trend = serie - m_t
+
+# Seconde estimation de la saisonnalité par moyenne mobile 3x5 
+coefsM3 = (1/15) * c(1,2,3,3,3,2,1)
+s_t = filter(serie_sans_trend,coefsM3)
+e_t = serie_sans_trend - s_t
+
+# Normalisation des coefficents saisonniers par moyenne mobile 2x12
+coefsM0 = (1/12) * c(1/2,rep(1,11),1/2)
+s_t = s_t - filter(s_t,coefsM0)
+
+# Estimation finale de la série corrigée des variations saisonnières (CVS)
+serie.CVS = serie - s_t
+
+
+# fonction utile pour "nettoyer" les séries contenant des "NA"
+serieSansNA<-function(serie) {
+  ind.debut=min(which(serie!="NA"))
+  ind.fin=max(which(serie!="NA"))
+  temps = time(serie)
+  t.debut = temps[ind.debut]
+  t.fin = temps[ind.fin]
+  annee.debut=trunc(t.debut) 
+  mois.debut=(t.debut-trunc(t.debut))*12+1
+  annee.fin=trunc(t.fin)
+  mois.fin=(t.fin-trunc(t.fin))*12+1
+  serieSansNA = ts(serie[ind.debut:ind.fin], start = c(annee.debut,mois.debut), end = c(annee.fin,mois.fin), frequency = 12)
+  return(serieSansNA)
+}
+
+# fonction permettant de dresser le graphique de la série brute et de la série CVS contenant des "NA"
+afficherSerieBruteEtCVS <- function(serieBrute,serieCVSAvecNA) {
+  ind.debut=min(which(serieCVSAvecNA!="NA"))
+  ind.fin=max(which(serieCVSAvecNA!="NA"))
+  temps = time(serieCVSAvecNA)
+  t.debut = temps[ind.debut]
+  t.fin = temps[ind.fin]
+  annee.debut=trunc(t.debut) 
+  mois.debut=(t.debut-trunc(t.debut))*12+1
+  annee.fin=trunc(t.fin)
+  mois.fin=(t.fin-trunc(t.fin))*12+1
+  serieCVSSansNA = ts(serieCVSAvecNA[ind.debut:ind.fin], start = c(annee.debut,mois.debut), end = c(annee.fin,mois.fin), frequency = 12)
+  plot.ts(ts(serieBrute[ind.debut:ind.fin], start = c(annee.debut,mois.debut), end = c(annee.fin,mois.fin), frequency = 12),col='blue',xlab = "année", ylab="Logarithme de la consommation totale de gaz naturel", main="Série brute et série CVS")
+  lines(serieCVSSansNA,col='red')
+  legend("topleft",legend = c("série brute", "série CVS"), col = c("blue", "red"), pch=c(NA,NA),lty=c(1,1))
+}
+
+
+# plot série brute et série ajustée
+#postscript("X11_logbrute_et_CVS_S2.ps")
+afficherSerieBruteEtCVS(serie,serie.CVS)
+#dev.off()
+
+
+# construction des termes de décomposition obtenus au format tseries sans valeurs NA
+m_t.sansNA = serieSansNA(m_t)
+s_t.sansNA = serieSansNA(s_t)
+e_t.sansNA = serieSansNA(e_t)
+
+# plot série brute, tendance, saisonnalité, bruit
+#postscript("X11_decomposition_S2.ps")
+par(mfrow=c(4,1))
+tps = time(serie)
+plot.ts(serie,xlim=c(tps[30],tps[377]), xlab="Temps", ylab="série brute", main = "série brute (logarithme)")
+plot.ts(m_t.sansNA,xlim=c(tps[30],tps[377]),xlab="Temps", ylab="tendance estimée",main="tendance estimée")
+plot.ts(s_t.sansNA,xlim=c(tps[30],tps[377]),xlab="Temps", ylab="saisonnalité estimée", main="saisonnalité estimée")
+plot.ts(e_t.sansNA,xlim=c(tps[30],tps[377]),xlab="Temps", ylab="bruit estimé", main="bruit estimé")
+#dev.off()
+
+#analyse du bruit estimé
+adf.test(e_t.sansNA)
+PP.test(e_t.sansNA)
+kpss.test(e_t.sansNA)
+mean(e_t.sansNA)
+
+# coefficients saisonniers
+coefSaisonniers=rep(NA,12)
+temps = time(serie)
+codeMois = round((temps - trunc(temps))*12) + 1
+for(i in 1:12) {
+  #indicesC1 = which(time(temps)>=2000)
+  #indicesC2=which(codeMois==i)
+  #indices = intersect(indicesC1,indicesC2)
+  indices=which(codeMois==i)
+  val=s_t[indices]
+  val=val[!is.na(val)] 
+  coefSaisonniers[i]=mean(val)
+}
+# renormalisation 
+coefSaisonniers = coefSaisonniers - mean(coefSaisonniers)
+
+# plot de la tendance 
+#postscript("X11_tendance_S2.ps")
+plot.ts(m_t.sansNA,main="tendance estimée",xlab="temps",ylab="tendance estimée")
+#dev.off()
+
+# Ajustement de la tendance par un polynôme de degré à déterminer
+# selon les critères AIC et BIC
+
+library(MASS)
+t=time(m_t.sansNA)
+degmax = 15
+deg <- 1:degmax	
+aic <- double(degmax)
+bic <- double(degmax)
+for (i in 1:degmax) {
+  k <- deg[i]
+  reg <- lm(m_t.sansNA ~ poly(t-1981, k,raw=TRUE))
+  aic[i] <- AIC(reg)
+  bic[i] <- AIC(reg, k = log(length(t)))
+}
+
+resultats <- cbind(deg, aic, bic)
+dimnames(resultats) <- list(NULL, c("degre", "AIC", "BIC"))
+resultats
+
+# plot des critères AIC et BIC
+#postscript("X11_AICBIC_S2.ps")
+plot(x=resultats[,1],y=resultats[,2],pch=1,col="blue",main="critères AIC et BIC en fonction du degré du polynôme",xlab="degré du polynôme",ylab="valeurs des critères",ylim=c(-900,-600))
+points(x=resultats[,1],y=resultats[,3],col="red")
+legend("topright",legend = c("AIC", "BIC"), col = c("blue", "red"), pch=c(1,1))
+#dev.off()
+
+
+# Ajustement par un polynôme de degré 3
+reg <- lm(m_t.sansNA ~ poly(t-1981, 3,raw=TRUE))
+
+summary(reg)
+
+# on fixe le coefficient du polynôme de degré 1 à 0
+reg <- lm(m_t.sansNA ~ I((t-1981)^2) + I((t-1981)^3))
+
+# plot de la tendance ajustée par le polynôme
+#postscript("X11_polyDeg3.ps")
+fit.ts = ts(reg$fit, start = c(time(m_t.sansNA)[1]), end = c(time(m_t.sansNA)[length(time(m_t.sansNA))]), frequency = 12)
+plot.ts(m_t.sansNA,type="l",col='brown',xlab="Temps",main="Ajustement de la tendance par un polynôme de degré 3",ylab="")
+lines(fit.ts)
+#dev.off()
+
+# représentation des résidus
+#postscript("X11_residusDeg3_S2.ps")
+plot(reg$residuals,type="l", main="Résidus de la régression par un polynôme de degré 3")
+abline(h=0)
+#dev.off()
+
+mean(reg$residuals)
+
+#test du porte-manteau sur les résidus avec les 20 premières auto-covariances
+Box.test(reg$residuals, type = "Box-Pierce", lag=20)
+
+# qqplot des résidus
+#postscript("X11_residusQQplot_S2.ps")
+qqnorm(reg$residuals,col="blue")
+qqline(reg$residuals,col="red")
+#dev.off()
+
+# test de Jarque-Bera sur les résidus
+library(tseries)
+jarque.bera.test(reg$residuals)
+
+
+# prévision pour les 12 prochains mois
+#---------------------------------------
+temps = time(serie)
+derniereDateConnue = temps[length(temps)]
+prev = NULL
+for (k in 1:12) {
+   calcul = reg$coefficients[1]  + reg$coefficients[2]*(derniereDateConnue-1981+k/12)^2 + reg$coefficients[3]*(derniereDateConnue-1981+k/12)^3 + rep(coefSaisonniers,2)[11:22][k]
+   prev = c(prev,calcul)
+}
+
+# ajout des valeurs prédites pour plot
+prev=c(serie[length(serie)],prev)
+
+# plot de la série avec valeurs prédites
+#postscript("X11_prevDeg3_S2.ps")
+plot.ts(exp(serie),xlim=c(2003,2016),xlab="année",ylab="Consommation totale de gaz naturel (en TWh PCS)")
+x=seq(time(serie)[length(serie)],(2015+9/12),1/12)
+lines(x,exp(prev),col="red")
+#dev.off()
+
+
+# -------------------------------------------------------------------------------
+# analyse du pouvoir prédictif de la méthode X11
+
+# on retire les 12 dernières données à la série initiale
+n = 12
+serie <- ts((log(as.numeric(data[10,2:(407-n)]))), start = c(1981,1), end = c(2013,10), frequency = 12)
+
+# Première estimation de la tendance par moyenne mobile 2x12
+coefsM0 = (1/12) * c(1/2,rep(1,11),1/2)
+m_t = filter(serie,coefsM0)
+
+# Première estimation de la série diminuée de sa tendance
+serie_sans_trend = serie - m_t
+
+# Première estimation de la saisonnalité par moyenne mobile 3x3 
+coefsM1 = (1/9) * c(1,2,3,2,1)
+s_t = filter(serie_sans_trend,coefsM1)
+e_t = serie_sans_trend - s_t
+
+# Normalisation des coefficents saisonniers par moyenne mobile 2x12
+s_t = s_t - filter(s_t,coefsM0)
+
+# Première estimation de la série corrigée des variations saisonnières (CVS)
+serie.CVS = serie - s_t
+
+# Seconde estimation de la tendance par moyenne mobile de Henderson à 13 termes
+#Henderson à 9 termes
+#coefsM2 = (1/2431) * c(-99,-24,288,648,805,648,288,-24,-99)
+#Henderson à 13 termes
+coefsM2 = (1/16796) * c(-325,-468,0,1100,2475,3600,4032,3600,2475,1100,0,-468,-325)
+#Henderson à 15 termes
+#coefsM2 = (1/193154) * c(-2652,-3732,-2730,3641,16016,28182,37422,40860,37422,28182,16016,3641,-2730,-3732,-2652)
+
+m_t = filter(serie.CVS,coefsM2)
+
+# Seconde estimation de la série diminuée de sa tendance
+serie_sans_trend = serie - m_t
+
+# Seconde estimation de la saisonnalité par moyenne mobile 3x5 
+coefsM3 = (1/15) * c(1,2,3,3,3,2,1)
+s_t = filter(serie_sans_trend,coefsM3)
+e_t = serie_sans_trend - s_t
+
+# Normalisation des coefficents saisonniers par moyenne mobile 2x12
+coefsM0 = (1/12) * c(1/2,rep(1,11),1/2)
+s_t = s_t - filter(s_t,coefsM0)
+
+# Estimation finale de la série corrigée des variations saisonnières (CVS)
+serie.CVS = serie - s_t
+
+# construction des termes de décomposition obtenus au format tseries sans valeurs NA
+m_t.sansNA = serieSansNA(m_t)
+s_t.sansNA = serieSansNA(s_t)
+e_t.sansNA = serieSansNA(e_t)
+
+#analyse du bruit estimé
+adf.test(e_t.sansNA)
+PP.test(e_t.sansNA)
+kpss.test(e_t.sansNA)
+mean(e_t.sansNA)
+
+# coefficients saisonniers
+coefSaisonniers=rep(NA,12)
+temps = time(serie)
+codeMois = round((temps - trunc(temps))*12) + 1
+for(i in 1:12) {
+  #indicesC1 = which(time(temps)>=2000)
+  #indicesC2=which(codeMois==i)
+  #indices = intersect(indicesC1,indicesC2)
+  indices=which(codeMois==i)
+  val=s_t[indices]
+  val=val[!is.na(val)] 
+  coefSaisonniers[i]=mean(val)
+}
+# renormalisation 
+coefSaisonniers = coefSaisonniers - mean(coefSaisonniers)
+
+
+# Ajustement par un polynôme de degré 3 dont le coefficient du polynôme de degré 1 est fixé à 0
+reg <- lm(m_t.sansNA ~ I((t-1981)^2) + I((t-1981)^3))
+summary(reg)
+
+# prévision des 12 derniers mois 
+temps = time(serie)
+derniereDateConnue = temps[length(temps)]
+prev = NULL
+for (k in 1:12) {
+   calcul = reg$coefficients[1]  + reg$coefficients[2]*(derniereDateConnue-1981+k/12)^2 + reg$coefficients[3]*(derniereDateConnue-1981+k/12)^3 + rep(coefSaisonniers,2)[11:22][k]
+   prev = c(prev,calcul)
+}
+
+# ajout des valeurs prédites pour plot
+prev=c(serie[length(serie)],prev)
+
+# comparaison des valeurs prédites et des valeurs réelles
+n=12
+#postscript("reellesVSpredites_X11_S2.ps")
+plot.ts(serie2,xlim = c(2003,2016),xlab="année",ylab="Consommation totale de gaz naturel (en TWh PCS)")
+x=seq(time(serie2)[length(serie2)]-n/12,(2014+9/12),1/12)
+lines(x,exp(prev),col="red")
+valeursReelles = serie2[(length(serie2)-n):length(serie2)]
+lines(x,valeursReelles,col="blue")
+legend("topright",col=c("red","blue"),c("Valeurs prédites","Valeurs réelles"),lty=c(1,1))
+#dev.off()
+
+
+
+
+# Méthode par modèle SARIMA
+#_________________________________________________________________________________________________________
+
+serie = log(serie2)
+
+#test du Portemanteau
+Box.test(serie)
+
+sarima.acf <- function(data,d,D,s){
+  
+  if(D<1) datasdiff <- data
+  else datasdiff <- diff(data,d=D,lag=s)
+  
+  if(d<1) datadd <- datasdiff
+  else datadd <- diff(datasdiff,d=d,lag=1)
+  
+  N <- length(datadd)
+  ddacf <- acf(datadd,lag.max=N-1,plot=F)
+  seasvals <- as.vector(ddacf$acf)[seq(1,N,s)]
+  slgm <- floor((N/s)/1)
+  
+  par(mfrow=c(1,2))
+  acf(datadd,lag.max=(s-1),main="ACF for lags < s")
+  plot(1,1,type="n",xlim=c(0,slgm),ylim=range(seasvals),xaxt="n",xlab="Lag",ylab="ACF",main="ACF for lags s, 2s, 3s, ...")
+  axis(1,at=0:slgm,labels=s*(0:slgm))
+  abline(h=0)
+  abline(h=c(-2/sqrt(N),2/sqrt(N)),lty=2,col=4)
+  segments(0:slgm,0,0:slgm,seasvals[1:(slgm+1)])
+  par(mfrow=c(1,1))
+}
+
+sarima.pacf <- function(data,d,D,s){
+  
+  if(D<1) datasdiff <- data
+  else datasdiff <- diff(data,d=D,lag=s)
+  
+  if(d<1) datadd <- datasdiff
+  else datadd <- diff(datasdiff,d=d,lag=1)
+  
+  N <- length(datadd)
+  ddpacf <- pacf(datadd,lag.max=N-1,plot=F)
+  seasvals <- as.vector(ddpacf$acf)[seq(1,N,s)]
+  slgm <- floor((N/s)/1)
+  
+  par(mfrow=c(1,2))
+  pacf(datadd,lag.max=(s-1),main="Partial ACF for lags < s")
+  plot(1,1,type="n",xlim=c(0,slgm),ylim=range(seasvals),xaxt="n",xlab="Lag",ylab="Partial ACF",main="Partial ACF for lags s, 2s, 3s, ...")
+  axis(1,at=0:slgm,labels=s*(0:slgm))
+  abline(h=0)
+  abline(h=c(-2/sqrt(N),2/sqrt(N)),lty=2,col=4)
+  segments(0:slgm,0,0:slgm,seasvals[1:(slgm+1)])
+  par(mfrow=c(1,1))
+}
+
+# paramètre moy = FALSE pour avoir un drift nul
+sarima.fit <- function(datats,p,d,q,P,D,Q,s,coeffixed=NULL,moy=FALSE) {
+  sarima.fit = arima(datats,order=c(p,d,q),seasonal=list(order=c(P,D,Q),period=s),include.mean=moy,fixed=coeffixed)
+  return(sarima.fit)
+}
+
+
+# détermination de s, d et D
+
+# sans différencier
+#postscript("acf_serieLog_S2.ps")
+sarima.acf(serie,0,0,12)
+#dev.off()
+
+# en différenciant saisonnièrement (D=1) 
+#postscript("acf_serieLogDiff_S2.ps")
+sarima.acf(serie,0,1,12)
+#dev.off()
+
+# série différenciée
+serie_d = diff(serie,d=1,lag=12)
+
+# plot de la série différenciée
+#postscript("serieLogDiffplot_S2.ps")
+plot.ts(serie_d,xlab="année", ylab="", main="Série stationnarisée Z_t",col='blue') 
+abline(h=0)
+#dev.off()
+
+#moyenne empirique
+mean(serie_d)
+#test de Student si moyenne de la série différenciée est 0
+t.test(serie_d)
+
+# Tests de stationarité de la série différenciée
+# test de Dickey-Fuller augmenté
+adf.test(serie_d)
+# test de Phillips-Perron
+PP.test(serie_d)
+# test de KPSS
+kpss.test(serie_d)
+
+# détermination de q et Q
+#postscript("acf_serieLogDiff_S2.ps")
+sarima.acf(serie,0,1,12)
+#dev.off()
+
+# détermination de p et P
+#postscript("pacf_serieLogDiff_S2.ps")
+sarima.pacf(serie,0,1,12)
+#dev.off()
+
+# AIC
+# BIC
+# Log vraisemblance
+# estimation de la variance du bruit d’innovation
+# test de Ljung-Box
+# test de Box-Pierce
+# test de Jarque-Berra
+# test de Shapiro-Wilk
+
+library(caschrono)
+matCriteres <- NULL
+matTestsRes <- NULL
+
+etudierSarima<-function(vect_p,d,vect_q,vect_P,D,vect_Q,s) {
+  nblignes = length(vect_p)*length(vect_q)*length(vect_P)*length(vect_Q)
+  print(paste("info :",nblignes," modèles vont être étudiés"))
+  matCriteres <<- NULL
+  matTestsRes <<- NULL
+  matCriteres <<- matrix(nrow=nblignes,ncol=4+4,dimnames = list(c(NULL),c("p", "q", "P","Q","AIC", "BIC", "logLik","sigma^2")))
+  matTestsRes <<- matrix(nrow=nblignes, ncol= 4+4,dimnames = list(c(NULL),c("p", "q", "P","Q","L-B","B-P","J-B","S-W")))
+
+  k=1
+  
+  for (p.i in vect_p) {
+    for (q.i in vect_q) {
+      for (P.i in vect_P) {
+        for (Q.i in vect_Q) {
+          if(p.i+q.i+P.i+Q.i==0) {Q.i=1}
+          print(paste("Etude SARIMA avec p=",p.i," q=",q.i," P=",P.i," Q=",Q.i))
+          boolRelance=TRUE
+          boolSarimaObtained = FALSE
+       
+          mod.sarima <- try(sarima.fit(serie_d,p.i,d,q.i,P.i,D,Q.i,s),silent=TRUE) 
+          if(class(mod.sarima) == "try-error") {
+            print("--> erreur")
+          } else {
+            boolSarimaObtained = TRUE
+          }
+        
+          if (boolSarimaObtained) {
+            coefs = rep(NA,length(mod.sarima$coef))
+          }
+      
+          # tant que tous les paramètres du modèle ne sont pas significatifs (test de student)
+          # on affine les coefficients du modèle à estimer
+          while(boolRelance && boolSarimaObtained) {
+            otest = try(t_stat(mod.sarima),silent=TRUE)
+            if(class(otest) == "try-error") {
+                print("--> erreur sur t_stat")
+                boolSarimaObtained = FALSE
+            } else {
+                if (any(t_stat(mod.sarima)[2,]>0.05)) {
+
+                   vind = which(t_stat(mod.sarima)[2,]>0.05)
+
+                   if (length(t_stat(mod.sarima)[2,])!=length(vind)) {        
+ 
+                     coefs[(which(is.na(coefs))[vind])]=0
+          
+                     boolSarimaObtained = FALSE
+                     mod.sarima <- try(sarima.fit(serie_d,p.i,d,q.i,P.i,D,Q.i,s,coefs),silent=TRUE) 
+                     if(class(mod.sarima) == "try-error") {
+                        print("--> erreur")
+                     } else {
+                     boolSarimaObtained = TRUE
+                     }
+                  } else {
+                     print("--> modèle de coefficients tous nuls")
+                     boolSarimaObtained=FALSE
+                     boolRelance = FALSE
+                  }
+  
+                } else {
+                  boolRelance=FALSE
+                }
+            }
+          }# fin while
+   
+          matCriteres[k,1:4] <<- cbind(p.i,q.i,P.i,Q.i)
+          matTestsRes[k,1:4] <<- cbind(p.i,q.i,P.i,Q.i)
+
+          if(boolSarimaObtained) {
+            res.sarima = mod.sarima$residuals     
+            vBIC = AIC(mod.sarima,k=log(length(serie_d)))
+            matCriteres[k,5:8] <<- cbind(mod.sarima$aic, vBIC, mod.sarima$loglik,mod.sarima$sigma2)
+            matTestsRes[k,5:6] <<- cbind(Box.test(res.sarima,lag=30,type="Ljung-Box")$p.value,Box.test(res.sarima,lag=40,type="Box-Pierce")$p.value)
+            matTestsRes[k,7:8] <<- cbind(jarque.bera.test(res.sarima)$p.value,shapiro.test(res.sarima)$p.value)
+          }
+          k=k+1    
+        } 
+      } 
+    }
+  }
+}
+
+d=0
+D=0
+s=12
+
+p=c(0,1,2)
+q=c(0,1,2,3)
+P=c(0,1,2,3,4)
+Q=c(0,1,2)
+
+etudierSarima(p,d,q,P,D,Q,s)
+
+ind=intersect(which(is.na(matCriteres[,5])==FALSE),which(is.na(matTestsRes[,5])==FALSE))
+matCriteres = matCriteres[ind,]
+matTestsRes = matTestsRes[ind,]
+
+mat = cbind(matCriteres,matTestsRes[,5:8])
+
+#ordonner par valeurs croissantes des AIC
+mat = mat[order(mat[,5],decreasing = F),] 
+#ordonner par valeurs croissantes des BIC
+mat = mat[order(mat[,6],decreasing = F),] 
+
+# modèle SARIMA(2,0,1,0,1,1)_12
+mod.sarima_1 = sarima.fit(serie,2,0,1,0,1,1,12)
+# modèle SARIMA(1,0,2,0,1,1)_12
+mod.sarima_2 = sarima.fit(serie,1,0,2,0,1,1,12)
+
+t_stat(mod.sarima_1)
+t_stat(mod.sarima_2)
+
+# plot des résidus
+#postscript("SARIMA_residus_S2.ps")
+par(mfrow=c(1,2))
+plot.ts(mod.sarima_1$residuals, main="Résidus du SARIMA(2,0,1,0,1,1)_12", t="l", col="blue", xlab="Temps", ylab="")
+plot.ts(mod.sarima_2$residuals, main="Résidus du SARIMA(1,0,2,0,1,1)_12", t="l", col="blue", xlab="Temps", ylab="")
+#dev.off()
+
+mean(mod.sarima_1$residuals)
+mean(mod.sarima_2$residuals)
+
+# test si moyenne des résidus =0
+t.test(mod.sarima_1$residuals)
+t.test(mod.sarima_2$residuals)
+
+# acf et pacf des modèles
+#postscript("SARIMA_residus1_acf_S2.ps")
+sarima.acf(mod.sarima_1$residuals,0,0,12)
+#dev.off()
+#postscript("SARIMA_residus1_pacf_S2.ps")
+sarima.pacf(mod.sarima_1$residuals,0,0,12)
+#dev.off()
+#postscript("SARIMA_residus2_acf_S2.ps")
+sarima.acf(mod.sarima_2$residuals,0,0,12)
+#dev.off()
+#postscript("SARIMA_residus2_pacf_S2.ps")
+sarima.pacf(mod.sarima_2$residuals,0,0,12)
+#dev.off()
+
+
+# pouvoir prédictif des modèles
+
+T = length(time(serie))
+n = 12
+i <- 1:(T-n-1)
+zoom = 5
+
+#SARIMA(2,0,1,0,1,1)_12
+resPred_1 <- predict(sarima.fit(serie[i],2,0,1,0,1,1,12), n)
+#SARIMA(1,0,2,0,1,1)_12
+resPred_2 <- predict(sarima.fit(serie[i],1,0,2,0,1,1,12), n)
+
+# plot des valeurs prédites VS valeurs réelles
+#postscript("SARIMA_compPredictionModeles_S2.ps")
+par(mfrow=c(1,2))
+annee <- time(serie)
+plot(annee[(T-zoom*n):T], serie[(T-zoom*n):T-1], main="prévision SARIMA(2,0,1,0,1,1)_12", t="l", col="blue", xlab="Temps", ylab="Y_t",ylim=c(2.5,4.5))
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_1$pred), col="red")
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_1$pred) + c(0,resPred_1$se)*1.96, lty=2)
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_1$pred) - c(0,resPred_1$se)*1.96, lty=2)
+plot(annee[(T-zoom*n):T], serie[(T-zoom*n):T-1], main="prévision SARIMA(1,0,2,0,1,1)_12", t="l", col="blue", xlab="Temps", ylab="Y_t",ylim=c(2.5,4.5))
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_2$pred), col="red")
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_2$pred) + c(0,resPred_2$se)*1.96, lty=2)
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_2$pred) - c(0,resPred_2$se)*1.96, lty=2)
+#dev.off()
+
+
+# prévision pour les 12 prochains mois
+#---------------------------------------
+mod.sarima = sarima.fit(serie,2,0,1,0,1,1,12)
+
+temps = time(serie)
+derniereDateConnue = temps[length(temps)]
+prev = NULL
+predObj = NULL
+predObj = predict(mod.sarima,12)
+prev = predObj$pred
+
+# ajout des valeurs prédites pour plot
+prev=c(serie[length(serie)],prev)
+
+# plot de la série avec valeurs prédites
+#postscript("SARIMA_prevision_S2.ps")
+plot.ts(exp(serie),xlim=c(2003,2016),xlab="année",ylab="Consommation totale de gaz naturel (en TWh PCS)")
+x=seq(derniereDateConnue,(2015+9/12),1/12)
+lines(x,exp(prev),col="red")
+lines(x, c(exp(serie[length(serie)]),exp(predObj$pred - predObj$se*1.96)), lty = 2,col="grey")
+lines(x, c(exp(serie[length(serie)]),exp(predObj$pred + predObj$se*1.96)), lty = 2,col="grey")
+#dev.off()
+
+
+
+
+
+
+
+
+

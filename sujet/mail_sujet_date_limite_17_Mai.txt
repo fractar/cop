@@ -1,0 +1,20 @@
+ Chers étudiants,
+
+pour le cours "Inférence statistique des copules" vous devez rendre un projet avant le dimanche 17 mai minuit (un point de moins par jour de retard). 
+
+A la Section 1.4.6 du document « L’actuariat avec R » (Charpentier et Dutang) téléchargeable à l’adresse :
+
+http://cran.r-project.org/doc/contrib/Charpentier_Dutang_actuariat_avec_R.pdf
+
+vous trouverez un exemple d’application des méthodes d’estimation pour calibrer une copule. Dans cet exemple les auteurs considèrent la force maximale du vent (en m/s) par jour pour les stations de Saint Martin en Haut (variable X) et Echirolles (variable Y). Comme vous le verrez, seulement la copule de Gumbel est testée pour la structure de dépendance et les lois exponentielle et Gamma pour les marginales. 
+
+Par ce projet il vous est demandé de tester d’autres copules et d’autres lois pour les marginales afin de proposer éventuellement une modélisation alternative. Votre choix doit bien sûr être justifié à l’aide d’analyses de graphiques et de résultats numériques. Les techniques vues en cours doivent être utilisées et leur utilisation doit être motivée.
+
+Le projet doit être réalisé en groupe de 4 étudiants. Vous devez rendre un rapport écrit (par mail, zippé) contenant les graphiques utilisés, expliquant votre démarche et commentant les résultats obtenus. Vous devez aussi fournir le fichier contenant le script R utilisé.      
+
+N'hésitez pas à me contacter si vous avez des questions quant à la mise en place du projet.
+
+Bien cordialement,
+
+Esterina Masiello  
+

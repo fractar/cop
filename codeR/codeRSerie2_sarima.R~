@@ -1,0 +1,350 @@
+
+library(tseries)
+
+#--------------------------------------------------------------------------------------------------
+# Préparation des données
+#--------------------------------------------------------------------------------------------------
+
+# initialisation de la graine
+set.seed(2015)
+
+# chargement des données 
+data.src = read.csv2("./donnees/Donnees.csv",header=TRUE,sep=";",dec=".",stringsAsFactors=FALSE)
+
+# conversion des données en type numérique (hormis la colonne 1 correspondant au titre de la série)
+data = data.src
+data[,2:407] = sapply(data.src[,2:407],FUN=as.numeric)
+
+
+
+#--------------------------------------------------------------------------------------------------
+# SERIE 2 : Consommation totale de gaz naturel (en TWh PCS)
+#--------------------------------------------------------------------------------------------------
+
+# note :  "TWh PCS" signifie "en milliards de kWh pouvoir calorifique supérieur".
+
+# création de l’objet de type série temporelle
+
+serie2 <- ts((as.numeric(data[10,2:407])), start = c(1981,1), end = c(2014,10), frequency = 12)
+
+
+
+################################################################################################################################################
+################################################################################################################################################
+################################################################################################################################################
+
+
+
+
+
+# Méthode par modèle SARIMA
+#_________________________________________________________________________________________________________
+
+serie = log(serie2)
+
+#test du Portemanteau
+Box.test(serie)
+
+sarima.acf <- function(data,d,D,s){
+  
+  if(D<1) datasdiff <- data
+  else datasdiff <- diff(data,d=D,lag=s)
+  
+  if(d<1) datadd <- datasdiff
+  else datadd <- diff(datasdiff,d=d,lag=1)
+  
+  N <- length(datadd)
+  ddacf <- acf(datadd,lag.max=N-1,plot=F)
+  seasvals <- as.vector(ddacf$acf)[seq(1,N,s)]
+  slgm <- floor((N/s)/1)
+  
+  par(mfrow=c(1,2))
+  acf(datadd,lag.max=(s-1),main="ACF for lags < s")
+  plot(1,1,type="n",xlim=c(0,slgm),ylim=range(seasvals),xaxt="n",xlab="Lag",ylab="ACF",main="ACF for lags s, 2s, 3s, ...")
+  axis(1,at=0:slgm,labels=s*(0:slgm))
+  abline(h=0)
+  abline(h=c(-2/sqrt(N),2/sqrt(N)),lty=2,col=4)
+  segments(0:slgm,0,0:slgm,seasvals[1:(slgm+1)])
+  par(mfrow=c(1,1))
+}
+
+sarima.pacf <- function(data,d,D,s){
+  
+  if(D<1) datasdiff <- data
+  else datasdiff <- diff(data,d=D,lag=s)
+  
+  if(d<1) datadd <- datasdiff
+  else datadd <- diff(datasdiff,d=d,lag=1)
+  
+  N <- length(datadd)
+  ddpacf <- pacf(datadd,lag.max=N-1,plot=F)
+  seasvals <- as.vector(ddpacf$acf)[seq(1,N,s)]
+  slgm <- floor((N/s)/1)
+  
+  par(mfrow=c(1,2))
+  pacf(datadd,lag.max=(s-1),main="Partial ACF for lags < s")
+  plot(1,1,type="n",xlim=c(0,slgm),ylim=range(seasvals),xaxt="n",xlab="Lag",ylab="Partial ACF",main="Partial ACF for lags s, 2s, 3s, ...")
+  axis(1,at=0:slgm,labels=s*(0:slgm))
+  abline(h=0)
+  abline(h=c(-2/sqrt(N),2/sqrt(N)),lty=2,col=4)
+  segments(0:slgm,0,0:slgm,seasvals[1:(slgm+1)])
+  par(mfrow=c(1,1))
+}
+
+# paramètre moy = FALSE pour avoir un drift nul
+sarima.fit <- function(datats,p,d,q,P,D,Q,s,coeffixed=NULL,moy=FALSE) {
+  sarima.fit = arima(datats,order=c(p,d,q),seasonal=list(order=c(P,D,Q),period=s),include.mean=moy,fixed=coeffixed)
+  return(sarima.fit)
+}
+
+
+# détermination de s, d et D
+
+# sans différencier
+#postscript("acf_serieLog_S2.ps")
+sarima.acf(serie,0,0,12)
+#dev.off()
+
+# en différenciant saisonnièrement (D=1) 
+#postscript("acf_serieLogDiff_S2.ps")
+sarima.acf(serie,0,1,12)
+#dev.off()
+
+# série différenciée
+serie_d = diff(serie,d=1,lag=12)
+
+# plot de la série différenciée
+#postscript("serieLogDiffplot_S2.ps")
+plot.ts(serie_d,xlab="année", ylab="", main="Série stationnarisée Z_t",col='blue') 
+abline(h=0)
+#dev.off()
+
+#moyenne empirique
+mean(serie_d)
+#test de Student si moyenne de la série différenciée est 0
+t.test(serie_d)
+
+# Tests de stationarité de la série différenciée
+# test de Dickey-Fuller augmenté
+adf.test(serie_d)
+# test de Phillips-Perron
+PP.test(serie_d)
+# test de KPSS
+kpss.test(serie_d)
+
+# détermination de q et Q
+#postscript("acf_serieLogDiff_S2.ps")
+sarima.acf(serie,0,1,12)
+#dev.off()
+
+# détermination de p et P
+#postscript("pacf_serieLogDiff_S2.ps")
+sarima.pacf(serie,0,1,12)
+#dev.off()
+
+# AIC
+# BIC
+# Log vraisemblance
+# estimation de la variance du bruit d’innovation
+# test de Ljung-Box
+# test de Box-Pierce
+# test de Jarque-Berra
+# test de Shapiro-Wilk
+
+library(caschrono)
+matCriteres <- NULL
+matTestsRes <- NULL
+
+etudierSarima<-function(vect_p,d,vect_q,vect_P,D,vect_Q,s) {
+  nblignes = length(vect_p)*length(vect_q)*length(vect_P)*length(vect_Q)
+  print(paste("info :",nblignes," modèles vont être étudiés"))
+  matCriteres <<- NULL
+  matTestsRes <<- NULL
+  matCriteres <<- matrix(nrow=nblignes,ncol=4+4,dimnames = list(c(NULL),c("p", "q", "P","Q","AIC", "BIC", "logLik","sigma^2")))
+  matTestsRes <<- matrix(nrow=nblignes, ncol= 4+4,dimnames = list(c(NULL),c("p", "q", "P","Q","L-B","B-P","J-B","S-W")))
+
+  k=1
+  
+  for (p.i in vect_p) {
+    for (q.i in vect_q) {
+      for (P.i in vect_P) {
+        for (Q.i in vect_Q) {
+          if(p.i+q.i+P.i+Q.i==0) {Q.i=1}
+          print(paste("Etude SARIMA avec p=",p.i," q=",q.i," P=",P.i," Q=",Q.i))
+          boolRelance=TRUE
+          boolSarimaObtained = FALSE
+       
+          mod.sarima <- try(sarima.fit(serie_d,p.i,d,q.i,P.i,D,Q.i,s),silent=TRUE) 
+          if(class(mod.sarima) == "try-error") {
+            print("--> erreur")
+          } else {
+            boolSarimaObtained = TRUE
+          }
+        
+          if (boolSarimaObtained) {
+            coefs = rep(NA,length(mod.sarima$coef))
+          }
+      
+          # tant que tous les paramètres du modèle ne sont pas significatifs (test de student)
+          # on affine les coefficients du modèle à estimer
+          while(boolRelance && boolSarimaObtained) {
+            otest = try(t_stat(mod.sarima),silent=TRUE)
+            if(class(otest) == "try-error") {
+                print("--> erreur sur t_stat")
+                boolSarimaObtained = FALSE
+            } else {
+                if (any(t_stat(mod.sarima)[2,]>0.05)) {
+
+                   vind = which(t_stat(mod.sarima)[2,]>0.05)
+
+                   if (length(t_stat(mod.sarima)[2,])!=length(vind)) {        
+ 
+                     coefs[(which(is.na(coefs))[vind])]=0
+          
+                     boolSarimaObtained = FALSE
+                     mod.sarima <- try(sarima.fit(serie_d,p.i,d,q.i,P.i,D,Q.i,s,coefs),silent=TRUE) 
+                     if(class(mod.sarima) == "try-error") {
+                        print("--> erreur")
+                     } else {
+                     boolSarimaObtained = TRUE
+                     }
+                  } else {
+                     print("--> modèle de coefficients tous nuls")
+                     boolSarimaObtained=FALSE
+                     boolRelance = FALSE
+                  }
+  
+                } else {
+                  boolRelance=FALSE
+                }
+            }
+          }# fin while
+   
+          matCriteres[k,1:4] <<- cbind(p.i,q.i,P.i,Q.i)
+          matTestsRes[k,1:4] <<- cbind(p.i,q.i,P.i,Q.i)
+
+          if(boolSarimaObtained) {
+            res.sarima = mod.sarima$residuals     
+            vBIC = AIC(mod.sarima,k=log(length(serie_d)))
+            matCriteres[k,5:8] <<- cbind(mod.sarima$aic, vBIC, mod.sarima$loglik,mod.sarima$sigma2)
+            matTestsRes[k,5:6] <<- cbind(Box.test(res.sarima,lag=30,type="Ljung-Box")$p.value,Box.test(res.sarima,lag=40,type="Box-Pierce")$p.value)
+            matTestsRes[k,7:8] <<- cbind(jarque.bera.test(res.sarima)$p.value,shapiro.test(res.sarima)$p.value)
+          }
+          k=k+1    
+        } 
+      } 
+    }
+  }
+}
+
+d=0
+D=0
+s=12
+
+p=c(0,1,2)
+q=c(0,1,2,3)
+P=c(0,1,2,3,4)
+Q=c(0,1,2)
+
+etudierSarima(p,d,q,P,D,Q,s)
+
+ind=intersect(which(is.na(matCriteres[,5])==FALSE),which(is.na(matTestsRes[,5])==FALSE))
+matCriteres = matCriteres[ind,]
+matTestsRes = matTestsRes[ind,]
+
+mat = cbind(matCriteres,matTestsRes[,5:8])
+
+#ordonner par valeurs croissantes des AIC
+mat = mat[order(mat[,5],decreasing = F),] 
+#ordonner par valeurs croissantes des BIC
+mat = mat[order(mat[,6],decreasing = F),] 
+
+# modèle SARIMA(2,0,1,0,1,1)_12
+mod.sarima_1 = sarima.fit(serie,2,0,1,0,1,1,12)
+# modèle SARIMA(1,0,2,0,1,1)_12
+mod.sarima_2 = sarima.fit(serie,1,0,2,0,1,1,12)
+
+t_stat(mod.sarima_1)
+t_stat(mod.sarima_2)
+
+# plot des résidus
+#postscript("SARIMA_residus_S2.ps")
+par(mfrow=c(1,2))
+plot.ts(mod.sarima_1$residuals, main="Résidus du SARIMA(2,0,1,0,1,1)_12", t="l", col="blue", xlab="Temps", ylab="")
+plot.ts(mod.sarima_2$residuals, main="Résidus du SARIMA(1,0,2,0,1,1)_12", t="l", col="blue", xlab="Temps", ylab="")
+#dev.off()
+
+mean(mod.sarima_1$residuals)
+mean(mod.sarima_2$residuals)
+
+# test si moyenne des résidus =0
+t.test(mod.sarima_1$residuals)
+t.test(mod.sarima_2$residuals)
+
+# acf et pacf des modèles
+#postscript("SARIMA_residus1_acf_S2.ps")
+sarima.acf(mod.sarima_1$residuals,0,0,12)
+#dev.off()
+#postscript("SARIMA_residus1_pacf_S2.ps")
+sarima.pacf(mod.sarima_1$residuals,0,0,12)
+#dev.off()
+#postscript("SARIMA_residus2_acf_S2.ps")
+sarima.acf(mod.sarima_2$residuals,0,0,12)
+#dev.off()
+#postscript("SARIMA_residus2_pacf_S2.ps")
+sarima.pacf(mod.sarima_2$residuals,0,0,12)
+#dev.off()
+
+
+# pouvoir prédictif des modèles
+
+T = length(time(serie))
+n = 12
+i <- 1:(T-n-1)
+zoom = 5
+
+#SARIMA(1,0,3,0,1,1)_12
+resPred_1 <- predict(sarima.fit(serie[i],2,0,1,0,1,1,12), n)
+#SARIMA(1,0,3,1,1,2)_12
+resPred_2 <- predict(sarima.fit(serie[i],1,0,2,0,1,1,12), n)
+
+# plot des valeurs prédites VS valeurs réelles
+#postscript("SARIMA_compPredictionModeles_S2.ps")
+par(mfrow=c(1,2))
+annee <- time(serie)
+plot(annee[(T-zoom*n):T], serie[(T-zoom*n):T-1], main="prévision SARIMA(2,0,1,0,1,1)_12", t="l", col="blue", xlab="Temps", ylab="Y_t",ylim=c(2.5,4.5))
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_1$pred), col="red")
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_1$pred) + c(0,resPred_1$se)*1.96, lty=2)
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_1$pred) - c(0,resPred_1$se)*1.96, lty=2)
+plot(annee[(T-zoom*n):T], serie[(T-zoom*n):T-1], main="prévision SARIMA(1,0,2,0,1,1)_12", t="l", col="blue", xlab="Temps", ylab="Y_t",ylim=c(2.5,4.5))
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_2$pred), col="red")
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_2$pred) + c(0,resPred_2$se)*1.96, lty=2)
+lines(annee[(T-n):T], c(serie[T-n-1],resPred_2$pred) - c(0,resPred_2$se)*1.96, lty=2)
+#dev.off()
+
+
+# prévision pour les 12 prochains mois
+#---------------------------------------
+mod.sarima = sarima.fit(serie,2,0,1,0,1,1,12)
+
+temps = time(serie)
+derniereDateConnue = temps[length(temps)]
+prev = NULL
+predObj = NULL
+predObj = predict(mod.sarima,12)
+prev = predObj$pred
+
+# ajout des valeurs prédites pour plot
+prev=c(serie[length(serie)],prev)
+
+# plot de la série avec valeurs prédites
+#postscript("SARIMA_prevision_S2.ps")
+plot.ts(exp(serie),xlim=c(2003,2016),xlab="année",ylab="Consommation totale de gaz naturel (en TWh PCS)")
+x=seq(derniereDateConnue,(2015+9/12),1/12)
+lines(x,exp(prev),col="red")
+lines(x, c(exp(serie[length(serie)]),exp(predObj$pred - predObj$se*1.96)), lty = 2,col="grey")
+lines(x, c(exp(serie[length(serie)]),exp(predObj$pred + predObj$se*1.96)), lty = 2,col="grey")
+#dev.off()
+
+
+
