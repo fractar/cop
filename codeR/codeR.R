@@ -39,7 +39,7 @@ Kendall(x,y)
 Rx = rank(x,ties.method = c("random"))
 Ry = rank(y,ties.method = c("random"))
 
-# rank-rank plot
+# rank-rank plot (dépendogramme)
 plot(Rx/n,Ry/n)
 
 # histogramme 3D
@@ -174,7 +174,7 @@ plot(Li[ind],Xi[ind],main="Khi plot empirique",col="blue")
 BiCopKPlot(Rx/n,Ry/n)
 
 
-#test d'indépendance
+#test classique d'indépendance
 statT = cor(x,y)*sqrt(n-2)/sqrt(1-cor(x,y)^2)
 abs(statT) > qt(p=1-0.05/2,df=n-2)
 
@@ -191,6 +191,10 @@ cor.test(x,y,method="kendall")
 qn.test(x,y,test="vdW")
 
 
+fitdistr(x,"normal")
+ks.test(x,"pnorm",mean=-0.01599282,sd=0.95044161)
+
+
 # Copule de Clayton
 
 # Estimation semi parametrique (CML) 
@@ -201,3 +205,4 @@ paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
 myClaytonCopula<-archmCopula(family="clayton",param=paramClayton)
 CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myClaytonCopula)
 CML
+
