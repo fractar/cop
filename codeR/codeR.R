@@ -42,7 +42,7 @@ plot(Rx/n,Ry/n)
 
 # histogramme 3D
 
-h2d=hist2d(Rx/n,Ry/n,show=FALSE, same.scale=TRUE, nbins=c(10,10))
+h2d=gplots::hist2d(Rx/n,Ry/n,show=FALSE, same.scale=TRUE, nbins=c(10,10))
 persp(h2d$x,h2d$y,h2d$counts,col="lightblue",theta=50)
 #hist3D(h2d$x,h2d$y,h2d$counts)
 
@@ -123,7 +123,6 @@ s = sqrt(d/12)
 K_gaussien<-function(x,y) {
   return((2*pi)^(-d/2) / (s^d) * exp(- (x^2+y^2)/(2*s^2) ))
 }
-
 
 # densité de la copule
 h=0.2
