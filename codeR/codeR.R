@@ -39,7 +39,7 @@ Kendall(x,y)
 Rx = rank(x,ties.method = c("random"))
 Ry = rank(y,ties.method = c("random"))
 
-# rank-rank plot
+# rank-rank plot (dépendogramme)
 plot(Rx/n,Ry/n)
 
 # histogramme 3D
@@ -189,5 +189,11 @@ cor.test(x,y,method="kendall")
 
 #Test de Van Der Waerden
 qn.test(x,y,test="vdW")
+
+
+
+fitdistr(x,"normal")
+ks.test(x,"pnorm",mean=-0.01599282,sd=0.95044161)
+
 
 
