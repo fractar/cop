@@ -159,7 +159,9 @@ for (i in 1:n){
   Li[i]<-4*sign((Fi[i]-0.5)*(Gi[i]-0.5))*max((Fi[i]-0.5)^2,(Gi[i]-0.5)^2)
 }
 
-plot(Li,Xi,main="Khi plot empirique")
+ind=which(abs(Li) < 4*(1/(n-1)-0.5)^2)
+
+plot(Li[ind],Xi[ind],main="Khi plot empirique",col="blue")
 # abline(h=4*(1/(length(rendFO)-1)-0.5)^2)
 # abline(h=-4*(1/(length(rendFO)-1)-0.5)^2)
 #dev.off()
