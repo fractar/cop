@@ -100,6 +100,13 @@ contour(u,v,fdr,col="blue")
 persp(u, v, fdr, theta = 30, phi = 15, expand = 0.7, col = "blue", main = "fdr de la copule empirique (Deheuvels)") 
 
 
+# densité de la copule empirique 
+
+nn<-100
+zz<-density2d(x=Rx/n,y=Ry/n,n=nn,limits=c(0,1,0,1))
+persp(zz$x,zz$y,z=zz$z, theta = 30, phi = 15, expand = 0.7, 
+	col = "blue", main = "densité noyau gaussien de la copule",
+	xlab="StMartin", ylab="Echirolles", zlab="") 
 
 
 
