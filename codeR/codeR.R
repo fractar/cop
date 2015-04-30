@@ -191,9 +191,18 @@ cor.test(x,y,method="kendall")
 qn.test(x,y,test="vdW")
 
 
-
 fitdistr(x,"normal")
 ks.test(x,"pnorm",mean=-0.01599282,sd=0.95044161)
 
 
+# Copule de Clayton
+
+# Estimation semi parametrique (CML) 
+
+
+tauKendall<-Kendall(x,y)
+paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
+myClaytonCopula<-archmCopula(family="clayton",param=paramClayton)
+CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myClaytonCopula)
+CML
 
