@@ -172,7 +172,7 @@ plot(Li[ind],Xi[ind],main="Khi plot empirique",col="blue")
 BiCopKPlot(Rx/n,Ry/n)
 
 
-#test d'indépendance
+#test classique d'indépendance
 statT = cor(x,y)*sqrt(n-2)/sqrt(1-cor(x,y)^2)
 abs(statT) > qt(p=1-0.05/2,df=n-2)
 
