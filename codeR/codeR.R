@@ -7,6 +7,8 @@ library("CDVine")
 library("copula")
 library("fCopulae")
 library("copBasic")
+library("fractal")
+library("akima")
 
 # chargement des données
 data(windEchirolles)
@@ -102,16 +104,24 @@ persp(u, v, fdr, theta = 30, phi = 15, expand = 0.7, col = "blue", main = "fdr d
 
 # densité de la copule empirique 
 
+#Noyau gaussien
 nn<-100
 zz<-density2d(x=Rx/n,y=Ry/n,n=nn,limits=c(0,1,0,1))
 persp(zz$x,zz$y,z=zz$z, theta = 30, phi = 15, expand = 0.7, 
 	col = "blue", main = "densité noyau gaussien de la copule",
 	xlab="StMartin", ylab="Echirolles", zlab="") 
 
+#Noyau gaussien
+zz<-kde2d(x=Rx/n,y=Ry/n)
+persp(zz$x,zz$y,z=zz$z, theta = 30, phi = 15, expand = 0.7, 
+	col = "blue", main = "densité noyau gaussien de la copule",
+	xlab="StMartin", ylab="Echirolles", zlab="") 
 
 
-
-
+#Noyau Epanechnikov
+mat<-cbind(Rx/n,Ry/n)
+res<-KDE(mat)
+plot(res,style="perspesctive")
 
 
 
