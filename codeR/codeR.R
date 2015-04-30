@@ -145,8 +145,24 @@ res<-KDE(mat)
 plot(res,style="perspective")
 
 
+Hi<-rep(NA,n)
+Fi<-rep(NA,n)
+Gi<-rep(NA,n)
+Xi<-rep(NA,n)
+Li<-rep(NA,n)
 
+for (i in 1:n){
+  Hi[i]<-sum(x[i]>=x[-i] & y[i]>=y[-i])/(n-1)
+  Fi[i]<-sum(x[i]>=x[-i])/(n-1)
+  Gi[i]<-sum(y[i]>=y[-i])/(n-1)	
+  Xi[i]<-(Hi[i]-Fi[i]*Gi[i])/(sqrt(Fi[i]*(1-Fi[i])*Gi[i]*(1-Gi[i])))
+  Li[i]<-4*sign((Fi[i]-0.5)*(Gi[i]-0.5))*max((Fi[i]-0.5)^2,(Gi[i]-0.5)^2)
+}
 
+plot(Li,Xi,main="Khi plot empirique")
+# abline(h=4*(1/(length(rendFO)-1)-0.5)^2)
+# abline(h=-4*(1/(length(rendFO)-1)-0.5)^2)
+#dev.off()
 
 
 
