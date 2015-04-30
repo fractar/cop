@@ -167,6 +167,9 @@ plot(Li[ind],Xi[ind],main="Khi plot empirique",col="blue")
 #dev.off()
 
 
+#K-Plot
+
+BiCopKPlot(Rx/n,Ry/n)
 
 
 
