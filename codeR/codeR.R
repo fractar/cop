@@ -121,7 +121,7 @@ persp(zz$x,zz$y,z=zz$z, theta = 30, phi = 15, expand = 0.7,
 #Noyau Epanechnikov
 mat<-cbind(Rx/n,Ry/n)
 res<-KDE(mat)
-plot(res,style="perspesctive")
+plot(res,style="perspective")
 
 
 
