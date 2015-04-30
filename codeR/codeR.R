@@ -9,6 +9,8 @@ library("fCopulae")
 library("copBasic")
 library("fractal")
 library("akima")
+library("pspearman")
+library("kSamples")
 
 # chargement des données
 data(windEchirolles)
@@ -179,9 +181,13 @@ abs(statT) > qt(p=1-0.05/2,df=n-2)
 statN = sqrt(n-3)*0.5*log( (1+cor(x,y))/(1-cor(x,y)) ) 
 abs(statN) > qnorm(p=1-0.05)
 
+# Test de Spearman
+cor.test(x,y,method="spearman")
 
+#Test de Kendall
+cor.test(x,y,method="kendall")
 
-
-
+#Test de Van Der Waerden
+qn.test(x,y,test="vdW")
 
 
