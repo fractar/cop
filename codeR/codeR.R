@@ -64,8 +64,8 @@ my_hist3d <- function(x, y, freq=FALSE, nclass="auto") {
         par.settings = list(axis.line = list(col = "transparent")),theta=40)
 }
 
-StMartin <- rx
-Echirolles <- ry
+StMartin <- Rx/n
+Echirolles <- Ry/n
 my_hist3d(StMartin, Echirolles, nclass=10)
 
 
