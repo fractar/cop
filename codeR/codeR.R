@@ -109,6 +109,28 @@ persp(zz$x,zz$y,z=zz$z, theta = 30, phi = 15, expand = 0.7,
 	xlab="StMartin", ylab="Echirolles", zlab="") 
 
 
+# noyau gaussien
+d=2
+s = sqrt(d/12)
+K_gaussien<-function(x,y) {
+  return((2*pi)^(-d/2) / (s^d) * exp(- (x^2+y^2)/(2*s^2) ))
+}
+
+
+# densité de la copule
+h=0.2
+density_estim<-function(u,v) {
+ return(1/(n*h^2) * sum(K_gaussien( (u-Rx/n)/h , (v-Ry/n)/h ) ) )
+}
+
+# on "vectorise" la fonction density_estim
+density_estim_vect <- Vectorize(density_estim, SIMPLIFY = TRUE)
+
+u<-(1:100)/100
+v<-u
+fdr<-outer(u,v,density_estim_vect)
+contour(u,v,fdr,col="blue")
+persp(u, v, fdr, theta = 30, phi = 15, expand = 0.7, col = "blue", main = "densité de la copule") 
 
 
 
