@@ -195,14 +195,64 @@ fitdistr(x,"normal")
 ks.test(x,"pnorm",mean=-0.01599282,sd=0.95044161)
 
 
-# Copule de Clayton
+####### Copule de Clayton #######
+
+
+#Estimation du tau de Kendall par la méthode des moments
+tauKendall<-Kendall(x,y)
 
 # Estimation semi parametrique (CML) 
-
-
-tauKendall<-Kendall(x,y)
 paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
 myClaytonCopula<-archmCopula(family="clayton",param=paramClayton)
 CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myClaytonCopula)
-CML
+thetaN<-coef(CML)
 
+fitClaytonCopula<-claytonCopula(thetaN,dim=2)
+
+#Bootstrap paramétrique
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=1000
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,fitClaytonCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+    tauKendall=Kendall(randomXY[,1],randomXY[,2])
+
+    # Estimation semi parametrique (CML) 
+    paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
+    myClaytonCopula<-archmCopula(family="clayton",param=paramClayton)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myClaytonCopula)
+    thetaN<-coef(CML)
+    fitClaytonCopula<-claytonCopula(thetaN,dim=2)
+    
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
