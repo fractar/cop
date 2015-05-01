@@ -278,17 +278,16 @@ Dn > L
 sum(Dnk > Dn)/length(Dnk)
 
 
-
-
-
-
-
-
-
-
+###### Copule gaussienne ######
 
 
 #Bootstrap paramétrique
+myNormalCopula<-ellipCopula(family="normal",param=cor(x,y))
+CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myNormalCopula)
+thetaN<-coef(CML)
+
+fitNormalCopula<-normalCopula(thetaN,dim=2)
+
 
 Ui = Rx/(n+1)
 Vi = Ry/(n+1)
@@ -305,11 +304,11 @@ fdrEmpirique<-function(u,v){
 UV<-cbind(Ui,Vi)
 N=100
 randomX = NULL
-Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2)
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitNormalCopula))^2)
 Dnk = NULL
 for (k in 1:N) {
     print(k)
-    randomXY <-rCopula(n,fitClaytonCopula)
+    randomXY <-rCopula(n,fitNormalCopula)
     rankX<-rank(randomXY[,1],ties.method="random")
     rankY<-rank(randomXY[,2],ties.method="random")
     Ui = rankX/(n+1)
@@ -320,13 +319,13 @@ for (k in 1:N) {
     }
 
     # Estimation semi parametrique (CML) 
-    myClaytonCopula<-ellipCopula(family="normal",param=cor(x,y))
-    CML<-fitCopula(data=cbind(Ui,Vi),copula=myClaytonCopula)
+    myNormalCopula<-ellipCopula(family="normal",param=cor(randomXY[,1],randomXY[,2]))
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myNormalCopula)
     thetaN<-coef(CML)
-    fitClaytonCopula<-claytonCopula(thetaN,dim=2)
+    fitNormalCopula<-normalCopula(thetaN,dim=2)
     
     UV<-cbind(Ui,Vi)
-    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2))
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitNormalCopula))^2))
 }
 
 alpha = 0.05
