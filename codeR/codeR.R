@@ -11,6 +11,7 @@ library("fractal")
 library("akima")
 library("pspearman")
 library("kSamples")
+library("TeachingDemos")
 
 # chargement des données
 data(windEchirolles)
