@@ -172,6 +172,7 @@ plot(Li[ind],Xi[ind],main="Khi plot empirique",col="blue")
 # abline(h=-4*(1/(length(rendFO)-1)-0.5)^2)
 #dev.off()
 }
+Khiplot(x,y,n)
 
 #K-Plot
 
@@ -241,7 +242,7 @@ fdrEmpirique<-function(u,v){
 }
 
 UV<-cbind(Ui,Vi)
-N=1000
+N=100
 randomX = NULL
 Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2)
 Dnk = NULL
@@ -261,6 +262,65 @@ for (k in 1:N) {
     # Estimation semi parametrique (CML) 
     paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
     myClaytonCopula<-archmCopula(family="clayton",param=paramClayton)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myClaytonCopula)
+    thetaN<-coef(CML)
+    fitClaytonCopula<-claytonCopula(thetaN,dim=2)
+    
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
+
+
+
+
+
+
+
+
+
+
+
+
+#Bootstrap paramétrique
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=100
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,fitClaytonCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+
+    # Estimation semi parametrique (CML) 
+    myClaytonCopula<-ellipCopula(family="normal",param=cor(x,y))
     CML<-fitCopula(data=cbind(Ui,Vi),copula=myClaytonCopula)
     thetaN<-coef(CML)
     fitClaytonCopula<-claytonCopula(thetaN,dim=2)
