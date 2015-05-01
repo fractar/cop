@@ -209,6 +209,32 @@ thetaN<-coef(CML)
 
 fitClaytonCopula<-claytonCopula(thetaN,dim=2)
 
+#Khi-plot de la copule de Clayton estimé
+
+number = 1000
+randomEstime<-rCopula(number,fitClaytonCopula)
+XClayton<-randomEstime[,1]
+YClayton<-randomEstime[,2]
+HiClayton<-rep(NA,n)
+FiClayton<-rep(NA,n)
+GiClayton<-rep(NA,n)
+XiClayton<-rep(NA,n)
+LiClayton<-rep(NA,n)
+
+for (i in 1:n){
+  HiClayton[i]<-sum(XClayton[i]>=XClayton[-i] & YClayton[i]>=YClayton[-i])/(number-1)
+  FiClayton[i]<-sum(XClayton[i]>=XClayton[-i])/(number-1)
+  GiClayton[i]<-sum(YClayton[i]>=YClayton[-i])/(number-1)	
+  XiClayton[i]<-(HiClayton[i]-FiClayton[i]*GiClayton[i])/(sqrt(FiClayton[i]*(1-FiClayton[i])*GiClayton[i]*(1-GiClayton[i])))
+  LiClayton[i]<-4*sign((FiClayton[i]-0.5)*(GiClayton[i]-0.5))*max((FiClayton[i]-0.5)^2,(GiClayton[i]-0.5)^2)
+}
+
+ind=which(abs(LiClayton) < 4*(1/(number-1)-0.5)^2)
+
+plot(LiClayton[ind],XiClayton[ind],main="Khi plot Copule Clayton Estimé",col="blue")
+
+
+
 #Bootstrap paramétrique
 
 Ui = Rx/(n+1)
@@ -256,3 +282,5 @@ alpha = 0.05
 L = sort(Dnk)[floor((1-alpha)*N)]
 #Règle de décision
 Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
