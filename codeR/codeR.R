@@ -233,7 +233,10 @@ ind=which(abs(LiClayton) < 4*(1/(number-1)-0.5)^2)
 
 plot(LiClayton[ind],XiClayton[ind],main="Khi plot Copule Clayton Estimé",col="blue")
 
-
+#K-plot de la copule de Clayton estimé
+KplotXRank<-rank(XClayton,ties.method="random")
+KplotYRank<-rank(YClayton,ties.method="random")
+BiCopKPlot(KplotXRank/number,KplotYRank/number)
 
 #Bootstrap paramétrique
 
