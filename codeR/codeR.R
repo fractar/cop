@@ -710,7 +710,7 @@ for (k in 1:N) {
     }
 
     # Estimation par la méthode des moments
-    myGumbelCopula<-gumbelCopula(param=paramGumbel)
+    myFranckCopula<-franckCopula(param=paramGumbel)
     CML<-fitCopula(data=cbind(Ui,Vi),copula=myGumbelCopula,start=paramGumbel)
     thetaN<-coef(CML)
     fitGumbelCopula<-gumbelCopula(thetaN,dim=2)
