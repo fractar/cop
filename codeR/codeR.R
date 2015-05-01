@@ -496,14 +496,165 @@ sum(Dnk > Dn)/length(Dnk)
 
 ##############    1) METHODE DES MOMENTS  #######################
 
-#Estimation par la méthode des moments (inversion du tau de Kendall)
+#Estimation du premier paramètre par la méthode des moments (inversion du tau de Kendall)
+#Estimation du second paramètre par maximum de vraisemblance
 tauKendall<-Kendall(x,y)
 paramStudent<-sin(pi*tauKendall$tau/2) 
-myStudentCopula<-tCopula(param=paramStudent)
+myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
+params<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula,method="ml")
+df<-coef(params)[2]
+myStudentCopula<-tCopula(param=paramStudent,df=df,dim=2)
 
+#Khi-plot de la copule de Student estimé
+
+number = 1000
+randomEstime<-rCopula(number,myStudentCopula)
+XStudent<-randomEstime[,1]
+YStudent<-randomEstime[,2]
+Khiplot(XStudent,YStudent,number)
+
+#K-plot de la copule de Student estimé
+KplotXRank<-rank(XStudent,ties.method="random")
+KplotYRank<-rank(YStudent,ties.method="random")
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+
+
+#Bootstrap paramétrique par méthode des moments
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=100
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, myStudentCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,myStudentCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+
+    # Estimation par la méthode des moments
+
+    tauKendall<-Kendall(randomXY[,1],randomXY[,2])
+    paramStudent<-sin(pi*tauKendall$tau/2) 
+    myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
+    params<-fitCopula(data=cbind(Ui,Vi),copula=myStudentCopula,method="ml")
+    df<-coef(params)[2]
+    myStudentCopula<-tCopula(param=paramStudent,df=df,dim=2)
+ 
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, myStudentCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
 
 
 ##############    2) METHODE CML  #######################
+
+#Estimation du premier paramètre par la méthode des moments (inversion du tau de Kendall)
+#Estimation du second paramètre par maximum de vraisemblance
+
+tauKendall<-Kendall(x,y)
+paramStudent<-sin(pi*tauKendall$tau/2) 
+myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
+params<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula,method="ml")
+df<-coef(params)[2]
+myStudentCopula<-tCopula(param=paramStudent,df=df,dim=2)
+CLM<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula)
+
+thetaN<-coef(CML)
+
+fitStudentCopula<-studentCopula(thetaN,dim=2)
+
+#Khi-plot de la copule de Student estimé
+
+number = 1000
+randomEstime<-rCopula(number,fitStudentCopula)
+XStudent<-randomEstime[,1]
+YStudent<-randomEstime[,2]
+Khiplot(XStudent,YStudent,number)
+
+#K-plot de la copule de Student estimé
+KplotXRank<-rank(XStudent,ties.method="random")
+KplotYRank<-rank(YStudent,ties.method="random")
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+
+
+#Bootstrap paramétrique par la méthode CML
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=100
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitStudentCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,fitStudentCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+
+    # Estimation semi parametrique (CML) 
+
+    tauKendall<-Kendall(randomXY[,1],randomXY[,2])
+    paramStudent<-sin(pi*tauKendall$tau/2) 
+    myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
+    params<-fitCopula(data=cbind(Ui,Vi),copula=myStudentCopula,method="ml")
+    df<-coef(params)[2]
+    myStudentCopula<-tCopula(param=paramStudent,df=df,dim=2)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myStudentCopula,start=c(paramStudent,df))
+    thetaN<-coef(CML)
+    fitStudentCopula<-studentCopula(thetaN,dim=2)
+    
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitStudentCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
 
 ################################### Copule de Gumbel #########################
 
@@ -672,7 +823,7 @@ XFranck<-randomEstime[,1]
 YFranck<-randomEstime[,2]
 Khiplot(XFranck,YFranck,number)
 
-#K-plot de la copule de Gumbel estimé
+#K-plot de la copule de Franck estimé
 KplotXRank<-rank(XFranck,ties.method="random")
 KplotYRank<-rank(YFranck,ties.method="random")
 BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
@@ -710,10 +861,10 @@ for (k in 1:N) {
     }
 
     # Estimation par la méthode des moments
-    myFranckCopula<-franckCopula(param=paramGumbel)
-    CML<-fitCopula(data=cbind(Ui,Vi),copula=myGumbelCopula,start=paramGumbel)
+    myFranckCopula<-franckCopula(param=1.5)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myFranckCopula,method="itau")
     thetaN<-coef(CML)
-    fitGumbelCopula<-gumbelCopula(thetaN,dim=2)
+    fitFranckCopula<-franckCopula(thetaN,dim=2)
 
     UV<-cbind(Ui,Vi)
     Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFranckCopula))^2))
@@ -728,3 +879,74 @@ sum(Dnk > Dn)/length(Dnk)
 
 
 ##############    2) METHODE CML  #######################
+
+
+#Estimation du tau de Kendall par la méthode des moments
+
+myFranckCopula<-franckCopula(param=1.5)
+CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myFranckCopula)
+thetaN<-coef(CML)
+
+fitFranckCopula<-franckCopula(thetaN,dim=2)
+
+#Khi-plot de la copule de Franck estimé
+
+number = 1000
+randomEstime<-rCopula(number,fitFranckCopula)
+XFranck<-randomEstime[,1]
+YFranck<-randomEstime[,2]
+Khiplot(XFranck,YFranck,number)
+
+#K-plot de la copule de Franck estimé
+KplotXRank<-rank(XFranck,ties.method="random")
+KplotYRank<-rank(YFranck,ties.method="random")
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+
+
+#Bootstrap paramétrique par la méthode CML
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=100
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFranckCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,fitFranckCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+
+    # Estimation semi parametrique (CML) 
+    myFranckCopula<-franckCopula(param=1.5)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myFranckCopula)
+    thetaN<-coef(CML)
+    fitFranckCopula<-franckCopula(thetaN,dim=2)
+    
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFranckCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
