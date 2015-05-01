@@ -12,6 +12,8 @@ library("akima")
 library("pspearman")
 library("kSamples")
 library("TeachingDemos")
+library("tcltk2")
+
 
 # chargement des données
 data(windEchirolles)
