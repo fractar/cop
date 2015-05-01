@@ -348,8 +348,13 @@ Dn > L
 #p-value
 sum(Dnk > Dn)/length(Dnk)
 
+################################### Copule gaussienne #########################
 
-###### Copule gaussienne ######
+##############    1) METHODE DES MOMENTS  #######################
+
+
+
+##############    2) METHODE CML  #######################
 
 myNormalCopula<-ellipCopula(family="normal",param=cor(x,y))
 CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myNormalCopula)
@@ -419,3 +424,26 @@ Dn > L
 #p-value
 sum(Dnk > Dn)/length(Dnk)
 
+################################### Copule de Student #########################
+
+##############    1) METHODE DES MOMENTS  #######################
+
+
+
+##############    2) METHODE CML  #######################
+
+################################### Copule de Gumbel #########################
+
+##############    1) METHODE DES MOMENTS  #######################
+
+
+
+##############    2) METHODE CML  #######################
+
+################################### Copule de Franck #########################
+
+##############    1) METHODE DES MOMENTS  #######################
+
+
+
+##############    2) METHODE CML  #######################
