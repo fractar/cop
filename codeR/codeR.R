@@ -13,7 +13,7 @@ library("pspearman")
 library("kSamples")
 library("TeachingDemos")
 library("tcltk2")
-
+library("latticeExtra")
 
 # chargement des données
 data(windEchirolles)
@@ -280,14 +280,27 @@ sum(Dnk > Dn)/length(Dnk)
 
 ###### Copule gaussienne ######
 
-
-#Bootstrap paramétrique
 myNormalCopula<-ellipCopula(family="normal",param=cor(x,y))
 CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myNormalCopula)
 thetaN<-coef(CML)
 
 fitNormalCopula<-normalCopula(thetaN,dim=2)
 
+#Khi-plot de la copule gaussienne  estimé
+
+number = 1000
+randomEstime<-rCopula(number,fitNormalCopula)
+XNormal<-randomEstime[,1]
+YNormal<-randomEstime[,2]
+Khiplot(XNormal,YNormal,number)
+
+#K-plot de la copule de Clayton estimé
+KplotXRank<-rank(XNormal,ties.method="random")
+KplotYRank<-rank(YNormal,ties.method="random")
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+
+
+#Bootstrap paramétrique
 
 Ui = Rx/(n+1)
 Vi = Ry/(n+1)
