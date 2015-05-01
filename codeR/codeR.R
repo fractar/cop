@@ -315,7 +315,7 @@ fdrEmpirique<-function(u,v){
 }
 
 UV<-cbind(Ui,Vi)
-N=100
+N=1000
 randomX = NULL
 Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitNormalCopula))^2)
 Dnk = NULL
