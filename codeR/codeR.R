@@ -208,8 +208,8 @@ tauKendall<-Kendall(x,y)
 
 # Estimation semi parametrique (CML) 
 paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
-myClaytonCopula<-archmCopula(family="clayton",param=paramClayton)
-CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myClaytonCopula)
+myClaytonCopula<-claytonCopula(param=paramClayton)
+CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myClaytonCopula,start=paramClayton)
 thetaN<-coef(CML)
 
 fitClaytonCopula<-claytonCopula(thetaN,dim=2)
