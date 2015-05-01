@@ -146,6 +146,9 @@ mat<-cbind(Rx/n,Ry/n)
 res<-KDE(mat)
 plot(res,style="perspective")
 
+#Khi-Plot
+
+Khiplot<-function(x,y,n) {
 
 Hi<-rep(NA,n)
 Fi<-rep(NA,n)
@@ -154,20 +157,18 @@ Xi<-rep(NA,n)
 Li<-rep(NA,n)
 
 for (i in 1:n){
-  Hi[i]<-sum(x[i]>=x[-i] & y[i]>=y[-i])/(n-1)
-  Fi[i]<-sum(x[i]>=x[-i])/(n-1)
-  Gi[i]<-sum(y[i]>=y[-i])/(n-1)	
-  Xi[i]<-(Hi[i]-Fi[i]*Gi[i])/(sqrt(Fi[i]*(1-Fi[i])*Gi[i]*(1-Gi[i])))
-  Li[i]<-4*sign((Fi[i]-0.5)*(Gi[i]-0.5))*max((Fi[i]-0.5)^2,(Gi[i]-0.5)^2)
+Hi[i]<-sum(x[i]>=x[-i] & y[i]>=y[-i])/(n-1)
+Fi[i]<-sum(x[i]>=x[-i])/(n-1)
+Gi[i]<-sum(y[i]>=y[-i])/(n-1)	
+Xi[i]<-(Hi[i]-Fi[i]*Gi[i])/(sqrt(Fi[i]*(1-Fi[i])*Gi[i]*(1-Gi[i])))
+Li[i]<-4*sign((Fi[i]-0.5)*(Gi[i]-0.5))*max((Fi[i]-0.5)^2,(Gi[i]-0.5)^2)
 }
-
-ind=which(abs(Li) < 4*(1/(n-1)-0.5)^2)
-
+ind=which(abs(Li) < 4*(1/(n-1)-0.5)^2)	
 plot(Li[ind],Xi[ind],main="Khi plot empirique",col="blue")
 # abline(h=4*(1/(length(rendFO)-1)-0.5)^2)
 # abline(h=-4*(1/(length(rendFO)-1)-0.5)^2)
 #dev.off()
-
+}
 
 #K-Plot
 
@@ -215,28 +216,12 @@ number = 1000
 randomEstime<-rCopula(number,fitClaytonCopula)
 XClayton<-randomEstime[,1]
 YClayton<-randomEstime[,2]
-HiClayton<-rep(NA,n)
-FiClayton<-rep(NA,n)
-GiClayton<-rep(NA,n)
-XiClayton<-rep(NA,n)
-LiClayton<-rep(NA,n)
-
-for (i in 1:n){
-  HiClayton[i]<-sum(XClayton[i]>=XClayton[-i] & YClayton[i]>=YClayton[-i])/(number-1)
-  FiClayton[i]<-sum(XClayton[i]>=XClayton[-i])/(number-1)
-  GiClayton[i]<-sum(YClayton[i]>=YClayton[-i])/(number-1)	
-  XiClayton[i]<-(HiClayton[i]-FiClayton[i]*GiClayton[i])/(sqrt(FiClayton[i]*(1-FiClayton[i])*GiClayton[i]*(1-GiClayton[i])))
-  LiClayton[i]<-4*sign((FiClayton[i]-0.5)*(GiClayton[i]-0.5))*max((FiClayton[i]-0.5)^2,(GiClayton[i]-0.5)^2)
-}
-
-ind=which(abs(LiClayton) < 4*(1/(number-1)-0.5)^2)
-
-plot(LiClayton[ind],XiClayton[ind],main="Khi plot Copule Clayton Estimé",col="blue")
+Khiplot(XClayton,YClayton,number)
 
 #K-plot de la copule de Clayton estimé
 KplotXRank<-rank(XClayton,ties.method="random")
 KplotYRank<-rank(YClayton,ties.method="random")
-BiCopKPlot(KplotXRank/number,KplotYRank/number)
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
 
 #Bootstrap paramétrique
 
