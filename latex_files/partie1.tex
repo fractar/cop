@@ -14,7 +14,7 @@ Notons :
 \end{itemize}
 
 ~\\~
-Notons que, puisque les jeux de données appelés dans $R$ \lstinline!windEchirolles! et \lstinline!windStMartin! possèdent 
+Puisque les jeux de données appelés dans $R$ \lstinline!windEchirolles! et \lstinline!windStMartin! possèdent 
 un nombre d’enregistrements différents en 2007, nous sélectionnons le plus petit sous-ensemble. Les données manquantes sont aussi retirées de la série.
 
 Nous avons ainsi deux vecteurs de données contenant chacun $T=633$ données (correspondant à 633 jours).
@@ -49,6 +49,9 @@ Nous allons donc chercher la copule qui s’adapte le mieux à nos données.
 
 \subsubsection{Scatter plot}
 
+
+
+
 \subsubsection{Rank-rank plot}
 
 \subsection{Corrélation de Pearson :  pas une mesure d’association !}
@@ -67,8 +70,13 @@ Nous allons donc chercher la copule qui s’adapte le mieux à nos données.
 \section{Méthode paramétriques d'estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Dans cette section, nous allons présenter et utiliser deux méthodes paramétriques d'estimation
+des copules :
 
-
+\begin{itemize}
+\item la méthode du maximum de vraisemblance
+\item la méthode IFM (Inference Function for Margins).
+\end{itemize}
 
 \subsection{Méthode du maximum de vraisemblance}
 
