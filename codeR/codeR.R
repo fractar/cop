@@ -503,7 +503,7 @@ paramStudent<-sin(pi*tauKendall$tau/2)
 myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
 params<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula,method="ml")
 df<-coef(params)[2]
-myStudentCopula<-tCopula(param=paramStudent,df=df,dim=2)
+myStudentCopula<-tCopula(param=paramStudent,df=floor(df),dim=2)
 
 #Khi-plot de la copule de Student estimé
 
@@ -557,7 +557,7 @@ for (k in 1:N) {
     myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
     params<-fitCopula(data=cbind(Ui,Vi),copula=myStudentCopula,method="ml")
     df<-coef(params)[2]
-    myStudentCopula<-tCopula(param=paramStudent,df=df,dim=2)
+    myStudentCopula<-tCopula(param=paramStudent,df=floor(df),dim=2)
  
     UV<-cbind(Ui,Vi)
     Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, myStudentCopula))^2))
@@ -586,7 +586,7 @@ CLM<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula)
 
 thetaN<-coef(CML)
 
-fitStudentCopula<-studentCopula(thetaN,dim=2)
+fitStudentCopula<-tCopula(thetaN,dim=2)
 
 #Khi-plot de la copule de Student estimé
 
@@ -643,7 +643,7 @@ for (k in 1:N) {
     myStudentCopula<-tCopula(param=paramStudent,df=df,dim=2)
     CML<-fitCopula(data=cbind(Ui,Vi),copula=myStudentCopula,start=c(paramStudent,df))
     thetaN<-coef(CML)
-    fitStudentCopula<-studentCopula(thetaN,dim=2)
+    fitStudentCopula<-tCopula(thetaN,dim=2)
     
     UV<-cbind(Ui,Vi)
     Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitStudentCopula))^2))
