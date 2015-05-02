@@ -151,7 +151,7 @@ plot(res,style="perspective")
 
 #Khi-Plot
 
-Khiplot<-function(x,y,n) {
+Khiplot<-function(x,y,n,xtitle,ytitle,title) {
 
 Hi<-rep(NA,n)
 Fi<-rep(NA,n)
@@ -167,12 +167,12 @@ Xi[i]<-(Hi[i]-Fi[i]*Gi[i])/(sqrt(Fi[i]*(1-Fi[i])*Gi[i]*(1-Gi[i])))
 Li[i]<-4*sign((Fi[i]-0.5)*(Gi[i]-0.5))*max((Fi[i]-0.5)^2,(Gi[i]-0.5)^2)
 }
 ind=which(abs(Li) < 4*(1/(n-1)-0.5)^2)	
-plot(Li[ind],Xi[ind],main="Khi plot empirique",col="blue")
+plot(Li[ind],Xi[ind],main=title,col="blue",xlab=xtitle,ylab=ytitle)
 # abline(h=4*(1/(length(rendFO)-1)-0.5)^2)
 # abline(h=-4*(1/(length(rendFO)-1)-0.5)^2)
 #dev.off()
 }
-Khiplot(x,y,n)
+Khiplot(x,y,n,"Li","Xi","Khi-plot empirique")
 
 #K-Plot
 
@@ -291,12 +291,12 @@ number = 1000
 randomEstime<-rCopula(number,fitClaytonCopula)
 XClayton<-randomEstime[,1]
 YClayton<-randomEstime[,2]
-Khiplot(XClayton,YClayton,number)
+Khiplot(XClayton,YClayton,number,"Li","Xi","Khi-plot de la copule de Clayton estimée (méthode CML)")
 
 #K-plot de la copule de Clayton estimé
 KplotXRank<-rank(XClayton,ties.method="random")
 KplotYRank<-rank(YClayton,ties.method="random")
-BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule de Clayton estimée (méthode CML)")
 
 #Bootstrap paramétrique par CML
 
