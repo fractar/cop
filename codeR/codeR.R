@@ -434,12 +434,12 @@ number = 1000
 randomEstime<-rCopula(number,fitNormalCopula)
 XNormal<-randomEstime[,1]
 YNormal<-randomEstime[,2]
-Khiplot(XNormal,YNormal,number)
+Khiplot(XNormal,YNormal,number,"Li","Xi","Khi-plot de la copule normale estimée (méthode CML)")
 
 #K-plot de la copule gaussienne estimé
 KplotXRank<-rank(XNormal,ties.method="random")
 KplotYRank<-rank(YNormal,ties.method="random")
-BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule normale estimée (méthode CML)")
 
 
 #Bootstrap paramétrique par la méthode CML
@@ -594,12 +594,12 @@ number = 1000
 randomEstime<-rCopula(number,fitStudentCopula)
 XStudent<-randomEstime[,1]
 YStudent<-randomEstime[,2]
-Khiplot(XStudent,YStudent,number)
+Khiplot(XStudent,YStudent,number,"Li","Xi","Khi-plot de la copule de Student estimée (méthode CML)")
 
 #K-plot de la copule de Student estimé
 KplotXRank<-rank(XStudent,ties.method="random")
 KplotYRank<-rank(YStudent,ties.method="random")
-BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule de Student estimée (méthode CML)")
 
 
 #Bootstrap paramétrique par la méthode CML
