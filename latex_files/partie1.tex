@@ -83,7 +83,8 @@ En effet, à l'aide de cette méthode, on peut obtenir une estimation du paramè
 
 \subsection{Copule de Clayton}
 
-Dans le cas de la copule de Clayton, on obtient, en sortie de l'algorithme, $0,6890$ comme estimation du paramètre de la copule. On peut ainsi tracer les Khi-plot et K-plot de cette copule de Clayton estimée et comparer les graphes avec ceux obtenus pour la copule empirique.
+Dans le cas de la copule de Clayton, on obtient, en sortie de l'algorithme, $\widehat{\theta}_{CML}=0,6890$ comme estimation du paramètre de la copule. L'écart type pour cet estimateur vaut $sd = 0,066$. La valeur obtenue pour l'estimation du paramètre est donc significative. Le maximum de vraisemblance est de $68,87$. 
+On peut ainsi tracer les Khi-plot et K-plot de cette copule de Clayton estimée et comparer les graphes avec ceux obtenus pour la copule empirique.
 
 \noindent%
 \begin{figure}[H]
@@ -119,7 +120,7 @@ En conclusion de cette étude sur la copule de Clayton estimée, on peut consid�
 
 \subsection{Copule de Gumbel}
 
-On procède de la même manière que pour la copule de Clayton. On obtient en sortie de l'algorithme une valeur de $1,4644$ comme estimation du paramètre de la copule de Gumbel par la méthode CML. 
+On procède de la même manière que pour la copule de Clayton. On obtient en sortie de l'algorithme une valeur de $\widehat{\theta}_{CML}=1,4644$ comme estimation du paramètre de la copule de Gumbel par la méthode CML. On a également la valeur de l'écart type $sd = 0,0548$. L'estimation obtenue est ainsi significative. Le maximum de vraisemblance vaut $92,59$.
 
 On représente ainsi ci-dessous les graphes du Khi-plot et du K-plot de la copule de Gumbel estimée:
 
@@ -149,7 +150,7 @@ Ces résultats sur la copule de Gumbel estimée sont satisfaisants. Mais, nous p
 
 \subsection{Copule de Frank}
 
-L'estimation du paramètre de la copule de Frank par méthode CML est $3,1693$. Avec cette estimation, nous pouvons simuler des données issues d'une copule de Frank ayant cette valeur de paramètre. On obtient alors les graphes du Khi-plot et K-plot de la copule de Frank estimée ci-dessous:
+L'estimation du paramètre de la copule de Frank par méthode CML est $\widehat{\theta}_{CML}=3,1693$. L'écart type obtenu est plus élevé que pour les deux études précédentes mais l'estimation reste largement significative. On a $sd = 0,2797$. Le maximum de vraisemblance est égal à $76,08$. Avec cette estimation, nous pouvons simuler des données issues d'une copule de Frank ayant cette valeur de paramètre. On obtient alors les graphes du Khi-plot et K-plot de la copule de Frank estimée ci-dessous:
 
 \noindent%
 \begin{figure}[H]
@@ -176,6 +177,30 @@ Ces graphes du Khi-plot et K-plot sont donc assez éloignés de ceux obtenus pou
 Cela est confirmé par l'algorithme du bootstrap paramétrique. On obtient $D_n = 0,049 > 0,025 = L$, pour un seuil de $0,05$. La p-value est nulle. Ainsi, on rejette l'hypothèse nulle et on conclut que la copule empirique ne fait pas partie de la famille des copules de Frank.
 
 \subsection{Copule normale}
+
+Par la méthode CML, on obtient l'estimation suivante du paramètre de la copule normale: $\widehat{\theta}_{CML}=0,5110$. L'écrat type associé vaut $sd = 0,031$, ce qui prouve la significativité de l'estimation obtenue. On obtient $93,48$ comme maximum de vraisemblance. 
+
+Comme dans les études précédentes, on trace le Khi-plot et K-plot de la copule normale estimée et on les compare à ceux de la copule empirique.
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=17 cm, angle=0]{./pictures/normalcmlkhiplot.png}
+      \centering\caption{\label{2}Khi-plot de la copule normale estimée (méthode CML)}
+    \end{center}
+\end{figure}
+
+Le Khi-plot de la copule normale estimée est très proche de celui de la copule empirique. On retrouve, sur les deux graphes, la même forme globale du nuage de points. De plus, pour les deux, le maximum en ordonnée est autour de $0,3$ et les valeurs extrêmes des abscisses ont une ordonnée autour de $0,1$. 
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=17 cm, angle=0]{./pictures/normalcmlkplot.png}
+      \centering\caption{\label{2}K-plot de la copule normale estimée (méthode CML)}
+    \end{center}
+\end{figure}
+
+Concernant le K-plot de la copule normale estimée, il 
 
 \subsection{Copule de Student}
 
