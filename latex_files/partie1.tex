@@ -81,11 +81,18 @@ Normale ou de Student) ou de dépendance linéaire.
 Le coefficient de corrélation linéaire de Pearson est défini, pour nos deux variables aléatoires $X$ et $Y$ de variances finies, par :
 
 $$
-r(X,Y) = \frac{\operatorname{Cov}(X,Y)}{\sqrt{ \operatorname{Var}(X) \operatorname{Var}(Y)}}
+\rho(X,Y) = \frac{\operatorname{Cov}(X,Y)}{\sqrt{ \operatorname{Var}(X) \operatorname{Var}(Y)}}
 $$
 
 où $\operatorname{Cov}(X,Y) = E[XY] - E[X] E[Y]$ est la covariance entre $X$ et $Y$ et $\operatorname{Var}(X)$, $\operatorname{Var}(Y)$ correspondent aux variances respectives
 de $X$ et $Y$.
+
+On a alors :
+
+\begin{itemize}
+\item $X$ et $Y$ sont corrélées linéairement $\Longleftrightarrow \rho(X,Y) \neq 0$
+\item $X$ et $Y$ sont non corrélées linéairement $\Longleftrightarrow \rho(X,Y) = 0$
+\end{itemize}
 
 Le coefficient de corrélation de Pearson est la mesure la plus connue. Mais il constitute une mesure très imparfaite de la dépendance. Il ne
 peut se mettre sous une forme ne faisant intervenir que la copule, les marginales restent présentent dans l’expression : ce coefficient n’est donc
@@ -98,9 +105,41 @@ comprises entre -1 et +1 ne sont pas atteignables.
 
 Ainsi, on retiendra que ce coefficient mesure mal une association non-linéaire, qu'il est trop sensible aux valeurs extrêmes et qu'il ne mesure pas vraiment la distance à l'indépendance.
 
+Pour remédier à cela, nous avons recours à d’autres indicateurs de dépendance se basant sur les rangs et les concordances observés de notre échantillon de données. 
+Ainsi, nous utilisons des coefficients de corrélation non linéaires, comme le rhô de Spearman ou le tau de Kendall.
 
-\subsubsection{Rho de Spearman}
+\subsubsection{Rhô de Spearman}
 
+Le rhô de Spearman $\rho_S$ se définit comme la corrélation entre les rangs d'observations.
+
+Soient $X=(X_1,...,X_n)$ et $Y=(Y_1,...,Y_n)$ deux vecteurs aléatoires réels et $R = (R_1,...,R_n)$ et $S = (S_1,...,S_n)$ les vecteurs aléatoires des rangs respectivement
+de $X$ et $Y$, alors :
+
+$$
+\rho_s = \rho(R,S) = \frac{\operatorname{Cov}(R,S)}{\sqrt{ \operatorname{Var}(R) \operatorname{Var}(S)}} = \frac{ \sum_{i=1}^n (R_i - \bar{R}) \times (S_i - \bar{S})  }{ \sqrt{   \sum_{i=1}^n (R_i - \bar{R})^2 \times  \sum_{i=1}^n (S_i - \bar{S})^2    }    }
+$$
+
+De plus, $rho_s$ vérifie les propriétés suivantes :
+
+\begin{enumerate}
+
+\item $\rho_s(X,Y) = \rho_s(Y,X), ~~\forall (X,Y)$
+\item $|\rho_s(X,Y)| \leq 1, ~~\forall (X,Y)$
+\item 
+\begin{itemize}
+\item $X$ et $Y$ comonotones $\Longleftrightarrow \rho_s(X,Y)=1$
+\item $X$ et $Y$ antimonotones $\Longleftrightarrow \rho_s(X,Y)=-1$
+\end{itemize}
+\item Si $g$ est une fonction strictement croissante alors $\rho_s(g(X),g(Y))=\rho_s(X,Y)$.
+
+\end{enumerate}
+
+En revanche, et communément à la corrélation de Pearson, il n’y a pas d’équivalence entre non-corrélation et indépendance :
+$$
+X \text{~et~} Y \text{~indépendantes~} \Longrightarrow \rho_s(X,Y) = 0
+$$
+	
+Le $\rho$ de Spearman élimine par construction l’effet de dépendance aux lois marginales.
 
 
 \subsubsection{Tau de Kendall}
