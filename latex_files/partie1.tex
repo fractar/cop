@@ -144,6 +144,38 @@ Le $\rho$ de Spearman élimine par construction l’effet de dépendance aux loi
 
 \subsubsection{Tau de Kendall}
 
+Soit $(X,Y)$ un vecteur aléatoire et $(X',Y')$ une copie de ce même vecteur. Le tau de Kendall $\tau$ est défini
+comme la différence  entre les probabilités de concordance et de discordance entre $(X,Y)$ et $(X',Y')$ :
+
+$$
+\tau(X,Y) = P\left( (X-X')(Y-Y') >0 \right) - P\left( (X-X')(Y-Y') <0 \right)
+$$
+
+Notons que $\tau$ est une fonction des rangs des observations car, en notant $R$, $R'$, $S$, $S'$ les rangs de $X$, $X'$, $S$ et $S'$ respectivement, on a 
+$$
+(X-X')(Y-Y') >0 \Longleftrightarrow (R-R')(S-S') >0 
+$$
+
+En outre, $\tau$ vérifie les propriétés suivantes :
+
+\begin{enumerate}
+
+\item $\tau(X,Y) = \tau(Y,X), ~~\forall (X,Y)$
+\item $|\tau(X,Y)| \leq 1, ~~\forall (X,Y)$
+\item 
+\begin{itemize}
+\item $X$ et $Y$ comonotones $\Longleftrightarrow \tau(X,Y)=1$
+\item $X$ et $Y$ antimonotones $\Longleftrightarrow \tau(X,Y)=-1$
+\end{itemize}
+\item Si $g$ est une fonction strictement croissante alors $\tau(g(X),g(Y))=\tau(X,Y)$.
+\end{enumerate}
+
+Enfin, comme les deux mesures précédentes, on a :
+
+$$
+X \text{~et~} Y \text{~indépendantes~} \Longrightarrow \tau(X,Y) = 0
+$$
+
 
 
 \section{Méthode non paramétrique d'estimation : la copule empirique}
