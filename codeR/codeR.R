@@ -12,8 +12,9 @@ library("akima")
 library("pspearman")
 library("kSamples")
 library("TeachingDemos")
-library("tcltk2")
 library("latticeExtra")
+
+library("tcltk2")
 
 # chargement des données
 data(windEchirolles)
@@ -24,10 +25,20 @@ x <- windStMartin$WIND.HIGH[1:n][id2keep]/3.6
 y <- windEchirolles$WIND.HIGH[1:n][id2keep]/3.6
 n <- length(x)
 
-plot(x,y)
+# rangs 
+Rx = rank(x,ties.method = c("random"))
+Ry = rank(y,ties.method = c("random"))
+
+#postscript("scatter_et_rankrank.ps")
+par(mfrow=c(1,2))
+# scatter plot (diagramme de dispersion)
+plot(x,y,xlab="Saint-Martin-en-Haut",ylab="Echirolles",main="Diagramme de dispersion",col="blue")
+# rank-rank plot (dépendogramme)
+plot(Rx/n,Ry/n,xlab="Saint-Martin-en-Haut",ylab="Echirolles",main="Graphique des rangs",col="blue")
+#dev.off()
 
 
-# Analyse des corrélations
+# Mesures de dépendance
 
 # coefficient de pearson (corrélation linéaire)
 cor(x,y)
@@ -38,12 +49,7 @@ Kendall(x,y)
 
 
 
-# rank / n
-Rx = rank(x,ties.method = c("random"))
-Ry = rank(y,ties.method = c("random"))
 
-# rank-rank plot (dépendogramme)
-plot(Rx/n,Ry/n)
 
 # histogramme 3D
 
