@@ -809,23 +809,23 @@ sum(Dnk > Dn)/length(Dnk)
 
 #Estimation du tau de Kendall par la méthode des moments
 
-myFranckCopula<-franckCopula(param=1.5)
-CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myFranckCopula,method="itau")
+myFrankCopula<-frankCopula(param=1.5)
+CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myFrankCopula,method="itau")
 thetaN<-coef(CML)
 
-fitFranckCopula<-franckCopula(thetaN,dim=2)
+fitFrankCopula<-frankCopula(thetaN,dim=2)
 
-#Khi-plot de la copule de Franck estimé
+#Khi-plot de la copule de Frank estimé
 
 number = 1000
-randomEstime<-rCopula(number,fitFranckCopula)
-XFranck<-randomEstime[,1]
-YFranck<-randomEstime[,2]
-Khiplot(XFranck,YFranck,number)
+randomEstime<-rCopula(number,fitFrankCopula)
+XFrank<-randomEstime[,1]
+YFrank<-randomEstime[,2]
+Khiplot(XFrank,YFrank,number)
 
-#K-plot de la copule de Franck estimé
-KplotXRank<-rank(XFranck,ties.method="random")
-KplotYRank<-rank(YFranck,ties.method="random")
+#K-plot de la copule de Frank estimé
+KplotXRank<-rank(XFrank,ties.method="random")
+KplotYRank<-rank(YFrank,ties.method="random")
 BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
 
 
@@ -846,11 +846,11 @@ fdrEmpirique<-function(u,v){
 UV<-cbind(Ui,Vi)
 N=100
 randomX = NULL
-Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFranckCopula))^2)
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFrankCopula))^2)
 Dnk = NULL
 for (k in 1:N) {
     print(k)
-    randomXY <-rCopula(n,fitFranckCopula)
+    randomXY <-rCopula(n,fitFrankCopula)
     rankX<-rank(randomXY[,1],ties.method="random")
     rankY<-rank(randomXY[,2],ties.method="random")
     Ui = rankX/(n+1)
@@ -861,13 +861,13 @@ for (k in 1:N) {
     }
 
     # Estimation par la méthode des moments
-    myFranckCopula<-franckCopula(param=1.5)
-    CML<-fitCopula(data=cbind(Ui,Vi),copula=myFranckCopula,method="itau")
+    myFrankCopula<-frankCopula(param=1.5)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myFrankCopula,method="itau")
     thetaN<-coef(CML)
-    fitFranckCopula<-franckCopula(thetaN,dim=2)
+    fitFrankCopula<-frankCopula(thetaN,dim=2)
 
     UV<-cbind(Ui,Vi)
-    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFranckCopula))^2))
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFrankCopula))^2))
 }
 
 alpha = 0.05
@@ -883,24 +883,24 @@ sum(Dnk > Dn)/length(Dnk)
 
 #Estimation du tau de Kendall par la méthode des moments
 
-myFranckCopula<-franckCopula(param=1.5)
-CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myFranckCopula)
+myFrankCopula<-frankCopula(param=1.5)
+CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myFrankCopula)
 thetaN<-coef(CML)
 
-fitFranckCopula<-franckCopula(thetaN,dim=2)
+fitFrankCopula<-frankCopula(thetaN,dim=2)
 
-#Khi-plot de la copule de Franck estimé
+#Khi-plot de la copule de Frank estimé
 
 number = 1000
-randomEstime<-rCopula(number,fitFranckCopula)
-XFranck<-randomEstime[,1]
-YFranck<-randomEstime[,2]
-Khiplot(XFranck,YFranck,number)
+randomEstime<-rCopula(number,fitFrankCopula)
+XFrank<-randomEstime[,1]
+YFrank<-randomEstime[,2]
+Khiplot(XFrank,YFrank,number,"Li","Xi","Khi-plot de la copule de Frank estimée (méthode CML)")
 
-#K-plot de la copule de Franck estimé
-KplotXRank<-rank(XFranck,ties.method="random")
-KplotYRank<-rank(YFranck,ties.method="random")
-BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+#K-plot de la copule de Frank estimé
+KplotXRank<-rank(XFrank,ties.method="random")
+KplotYRank<-rank(YFrank,ties.method="random")
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule de Frank estimée (méthode CML)")
 
 
 #Bootstrap paramétrique par la méthode CML
@@ -920,11 +920,11 @@ fdrEmpirique<-function(u,v){
 UV<-cbind(Ui,Vi)
 N=100
 randomX = NULL
-Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFranckCopula))^2)
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFrankCopula))^2)
 Dnk = NULL
 for (k in 1:N) {
     print(k)
-    randomXY <-rCopula(n,fitFranckCopula)
+    randomXY <-rCopula(n,fitFrankCopula)
     rankX<-rank(randomXY[,1],ties.method="random")
     rankY<-rank(randomXY[,2],ties.method="random")
     Ui = rankX/(n+1)
@@ -935,13 +935,13 @@ for (k in 1:N) {
     }
 
     # Estimation semi parametrique (CML) 
-    myFranckCopula<-franckCopula(param=1.5)
-    CML<-fitCopula(data=cbind(Ui,Vi),copula=myFranckCopula)
+    myFrankCopula<-frankCopula(param=1.5)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myFrankCopula)
     thetaN<-coef(CML)
-    fitFranckCopula<-franckCopula(thetaN,dim=2)
+    fitFrankCopula<-frankCopula(thetaN,dim=2)
     
     UV<-cbind(Ui,Vi)
-    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFranckCopula))^2))
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFrankCopula))^2))
 }
 
 alpha = 0.05
