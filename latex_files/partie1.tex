@@ -1,5 +1,5 @@
 
-\section{Présentation des données}
+\section{Données}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Présentation}
 
@@ -18,6 +18,9 @@ Puisque les jeux de données appelés dans $R$ \lstinline!windEchirolles! et \ls
 un nombre d’enregistrements différents en 2007, nous sélectionnons le plus petit sous-ensemble. Les données manquantes sont aussi retirées de la série.
 
 Nous avons ainsi deux vecteurs de données contenant chacun $T=633$ données (correspondant à 633 jours).
+
+
+\subsection{Formalisation}
 
 Nous allons donc nous intéresser à la relation existant entre ces deux variables aléatoires réelles au moyen de modélisations par copules.
 En effet,  les fonctions copules permettent de déterminer la nature de dépendance des séries qu’elle soit linéaire ou pas, monotone ou pas.
@@ -45,7 +48,10 @@ Nous allons donc chercher la copule qui s’adapte le mieux à nos données.
 
 
 
+
 \subsection{Observation graphique}
+
+
 
 \subsubsection{Scatter plot}
 
@@ -54,11 +60,52 @@ Nous allons donc chercher la copule qui s’adapte le mieux à nos données.
 
 \subsubsection{Rank-rank plot}
 
-\subsection{Corrélation de Pearson :  pas une mesure d’association !}
+\subsection{Mesurer la dépendance}
 
-\subsection{Rho de Spearman}
+\subsubsection{Dépendance ou corrélation ?}
 
-\subsection{Tau de Kendall}
+Il est important de rappeler que les notions de dépendance et de corrélation sont différentes.
+En effet, si $X$ et $Y$ sont indépendantes, cela implique que $X$ et $Y$ sont non corrélées. Mais attention, la réciproque est fausse, sauf dans
+le cas où les variables sont gaussiennes car la dépendance est alors entièrement caractérisées par le coefficient de corrélation.
+
+Un contre-exemple permettant d'illustrer cette remarque est le suivant :
+
+Soit $X \sim \mathcal{N}(0,1)$ et $Y = X^2$, alors $\operatorname{Cov}(X,Y) = E[X^3] = 0$.
+
+Le coefficient de corrélation doit donc être utilisée avec précaution car il n’est pertinent qu’en présence de distributions elliptiques (distribution multivariée
+Normale ou de Student) ou de dépendance linéaire.
+
+
+\subsubsection{Corrélation de Pearson}
+
+Le coefficient de corrélation linéaire de Pearson est défini, pour nos deux variables aléatoires $X$ et $Y$ de variances finies, par :
+
+$$
+r(X,Y) = \frac{\operatorname{Cov}(X,Y)}{\sqrt{ \operatorname{Var}(X) \operatorname{Var}(Y)}}
+$$
+
+où $\operatorname{Cov}(X,Y) = E[XY] - E[X] E[Y]$ est la covariance entre $X$ et $Y$ et $\operatorname{Var}(X)$, $\operatorname{Var}(Y)$ correspondent aux variances respectives
+de $X$ et $Y$.
+
+Le coefficient de corrélation de Pearson est la mesure la plus connue. Mais il constitute une mesure très imparfaite de la dépendance. Il ne
+peut se mettre sous une forme ne faisant intervenir que la copule, les marginales restent présentent dans l’expression : ce coefficient n’est donc
+pas une mesure de dépendance.
+
+De plus, il n’intègre que la composante linéaire de la dépendance, au sens où $r(X,Y) \pm 1$ si et seulement si $Y= a \times x + b$.
+
+Enfin, on peut montrer (en utilisant l'inégalité de Tchen) que, pour les marginales fixées, toutes les valeurs
+comprises entre -1 et +1 ne sont pas atteignables.
+
+Ainsi, on retiendra que ce coefficient mesure mal une association non-linéaire, qu'il est trop sensible aux valeurs extrêmes et qu'il ne mesure pas vraiment la distance à l'indépendance.
+
+
+\subsubsection{Rho de Spearman}
+
+
+
+\subsubsection{Tau de Kendall}
+
+
 
 \section{Méthode non paramétrique d'estimation : la copule empirique}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
