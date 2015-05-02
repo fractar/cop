@@ -4,12 +4,12 @@
 \subsection{Présentation}
 
 Nous disposons de deux séries de données contenues dans le package \lstinline!gumbel! correspondant à la vitesse maximale du vent par jour, sur la période août 2005 - avril 2007,
-relevée à deux stations différentes en région Rhône-Alpes : l'une à Saint Martin en haut (département du Rhône) et et une autre à Echirolles (département de l'Isère).
+relevée à deux stations différentes en région Rhône-Alpes : l'une à Saint-Martin-en-Haut (département du Rhône) et et une autre à Echirolles (département de l'Isère).
 
 ~\\~
 Notons :
 \begin{itemize}
-\item $(X_t)_t$ la série relative à la force maximale du vent (en m/s) par jour relevée par la station à Saint Martin en Haut 
+\item $(X_t)_t$ la série relative à la force maximale du vent (en m/s) par jour relevée par la station à Saint-Martin-en-Haut 
 \item $(Y_t)_t$ la série relative à la force maximale du vent (en m/s) par jour relevée par la station à Echirolles.
 \end{itemize}
 
@@ -17,7 +17,7 @@ Notons :
 Puisque les jeux de données appelés dans $R$ \lstinline!windEchirolles! et \lstinline!windStMartin! possèdent 
 un nombre d’enregistrements différents en 2007, nous sélectionnons le plus petit sous-ensemble. Les données manquantes sont aussi retirées de la série.
 
-Nous avons ainsi deux vecteurs de données contenant chacun $T=633$ données (correspondant à 633 jours).
+Nous avons ainsi deux vecteurs de données contenant chacun $n=633$ données (correspondant à 633 jours).
 
 
 \subsection{Formalisation}
@@ -185,6 +185,12 @@ $$
 
 
 
+
+
+
+
+
+
 \section{Méthode paramétriques d'estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -204,7 +210,7 @@ des copules :
 \section{Méthode semi-paramétrique d'estimation (CML)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Dans cette section, nous allons utiliser la méthode CML (méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin et celles sur Echirolles.
+Dans cette section, nous allons utiliser la méthode CML (méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin-en-Haut et celles sur Echirolles.
 En effet, à l'aide de cette méthode, on peut obtenir une estimation du paramètre de la copule sans se soucier des marginales. Pour cela, il suffit d'utiliser la fonction \textit{fitcopula} de R en passant comme arguments les rangs sur nos deux groupes de données translatés sur $[0;1]$ et un point de départ de l'algorithme. Ce point de départ sera l'estimation du paramètre de la copule obtenue par la méthode des moments. Avec l'estimation du paramètre obtenue en sortie de notre algorithme, on peut alors créer notre copule estimée.
 
 \subsection{Copule de Clayton}

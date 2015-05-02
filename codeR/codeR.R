@@ -24,8 +24,15 @@ x <- windStMartin$WIND.HIGH[1:n][id2keep]/3.6
 y <- windEchirolles$WIND.HIGH[1:n][id2keep]/3.6
 n <- length(x)
 
-plot(x,y)
+# rangs 
+Rx = rank(x,ties.method = c("random"))
+Ry = rank(y,ties.method = c("random"))
 
+# scatter plot (diagramme de dispersion)
+plot(x,y,xlab="Saint-Martin-en-Haut",ylab="Echirolles",main="diagramme de dispersion")
+
+# rank-rank plot (dépendogramme)
+plot(Rx/n,Ry/n,main="Rank-rank plot (dépendogramme)")
 
 # Analyse des corrélations
 
@@ -38,12 +45,7 @@ Kendall(x,y)
 
 
 
-# rank / n
-Rx = rank(x,ties.method = c("random"))
-Ry = rank(y,ties.method = c("random"))
 
-# rank-rank plot (dépendogramme)
-plot(Rx/n,Ry/n)
 
 # histogramme 3D
 
