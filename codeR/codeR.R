@@ -744,12 +744,12 @@ number = 1000
 randomEstime<-rCopula(number,fitGumbelCopula)
 XGumbel<-randomEstime[,1]
 YGumbel<-randomEstime[,2]
-Khiplot(XGumbel,YGumbel,number)
+Khiplot(XGumbel,YGumbel,number,"Li","Xi","Khi-plot de la copule de Gumbel estimée (méthode CML)")
 
 #K-plot de la copule de Gumbel estimé
 KplotXRank<-rank(XGumbel,ties.method="random")
 KplotYRank<-rank(YGumbel,ties.method="random")
-BiCopKPlot(KplotXRank/(number),KplotYRank/(number))
+BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule de Gumbel estimée (méthode CML)")
 
 
 #Bootstrap paramétrique par la méthode CML

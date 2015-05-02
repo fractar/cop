@@ -36,7 +36,7 @@ En effet, à l'aide de cette méthode, on peut obtenir une estimation du paramè
 
 \subsection{Copule de Clayton}
 
-Dans le cas de la copule de Clayton, on obtient, en sortie de l'algorithme, $0,6890$ comme estimation du paramètre de la copule. On peut ainsi tracer les Khi-plot et K-plot de cette copule de Clayton estimé et comparer les graphes avec ceux obtenus pour la copule empirique.
+Dans le cas de la copule de Clayton, on obtient, en sortie de l'algorithme, $0,6890$ comme estimation du paramètre de la copule. On peut ainsi tracer les Khi-plot et K-plot de cette copule de Clayton estimée et comparer les graphes avec ceux obtenus pour la copule empirique.
 
 \noindent%
 \begin{figure}[H]
@@ -71,6 +71,27 @@ Dans notre situation, on obtient, avec un seuil de $0,05$, $D_n = 0,1422 > 0,046
 En conclusion de cette étude sur la copule de Clayton estimée, on peut considérer que la modélisation de la dépendance entre nos deux séries de données par une copule de Clayton n'est pas satisfaisante.
 
 \subsection{Copule de Gumbel}
+
+On procède de la même manière que pour la copule de Clayton. On obtient en sortie de l'algorithme une valeur de $1,4644$ comme estimation du paramètre de la copule de Gumbel par la méthode CML. 
+
+On représente ainsi ci-dessous les graphes du Khi-plot et du K-plot de la copule de Gumbel estimée:
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=17 cm, angle=0]{./pictures/gumbelcmlkhiplot.png}
+      \centering\caption{\label{2}Khi-plot de la copule de Gumbel estimée (méthode CML)}
+    \end{center}
+\end{figure}
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=17 cm, angle=0]{./pictures/claytoncmlkplot.png}
+      \centering\caption{\label{2}K-plot de la copule de Gumbel estimée (méthode CML)}
+    \end{center}
+\end{figure}
+
 
 \subsection{Copule de Franck}
 
