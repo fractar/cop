@@ -55,6 +55,13 @@ Nous allons donc chercher la copule qui s’adapte le mieux à nos données.
 
 \subsubsection{Scatter plot et Rank-rank plot}
 
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=17 cm, angle=0]{./pictures/scatter_et_rankrank.png}
+      \centering\caption{Diagramme de dispersion et graphique des rangs}
+    \end{center}
+\end{figure}
 
 
 
@@ -209,7 +216,11 @@ des copules :
 \section{Méthode semi-paramétrique d'estimation (CML)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+<<<<<<< HEAD
 Dans cette section, nous allons utiliser la méthode CML (méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin-en-Haut et celles sur Echirolles.
+=======
+Dans cette section, nous allons utiliser la méthode CML (Canonical Maximum Likelihood, méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin et celles sur Echirolles.
+>>>>>>> 64aab4bba611830b92856ac23f29641a2cc0e5e3
 En effet, à l'aide de cette méthode, on peut obtenir une estimation du paramètre de la copule sans se soucier des marginales. Pour cela, il suffit d'utiliser la fonction \textit{fitcopula} de R en passant comme arguments les rangs sur nos deux groupes de données translatés sur $[0;1]$ et un point de départ de l'algorithme. Ce point de départ sera l'estimation du paramètre de la copule obtenue par la méthode des moments. Avec l'estimation du paramètre obtenue en sortie de notre algorithme, on peut alors créer notre copule estimée.
 
 \subsection{Copule de Clayton}
@@ -225,7 +236,7 @@ On peut ainsi tracer les Khi-plot et K-plot de cette copule de Clayton estimée 
     \end{center}
 \end{figure}
 
-En comparant ce graphe du Khi-plot avec celui obtenu pour la copule empirique, on peut apercevoir une ressemblance, notamment dûe au fait que les points se répartissent du même côté de l'axe des ordonées (du côté positif) exprimant ainsi une dépendance positive. Cependant, du côté positif de l'axe des abscisses, le nuage de point semble se séparer en deux. Ceci n'est pas observée sur le khi-plot de la copule empirique. 
+En comparant ce graphe du Khi-plot avec celui obtenu pour la copule empirique, on peut apercevoir une ressemblance, notamment dûe au fait que les points se répartissent du même côté de l'axe des ordonées (du côté positif) exprimant ainsi une dépendance positive. Cependant, du côté positif de l'axe des abscisses, le nuage de point semble se séparer en deux. Ceci n'est pas observée sur le Khi-plot de la copule empirique. 
 
 \noindent%
 \begin{figure}[H]
@@ -235,7 +246,7 @@ En comparant ce graphe du Khi-plot avec celui obtenu pour la copule empirique, o
     \end{center}
 \end{figure}
 
-De la même manière, pour ce graphe du K-plot, on observe une similitude et plusieurs disparités par rapport à celui de la copule empirique. En effet, les points semblent se répartir dans le même espace pour les deux figures (globalement entre la courbe de dépendance positive parfaite et la droite d'indépendance $y=x$). Cela montre une nouvelle fois la dépendance positive entre nos deux séries de données. Cependant, concernant le graphe associé à la copule de Clayton estimée, les variations de la répartition des points sont plus grandes et plus nombreuses. Certains points dépassent en effet la courbe de dépendance positive parfaite et on compte également $14$ oscillations distinctes contre $12$ pour le K-plot de la copule empirique. De plus, pour les dernières espérances de statistique d'ordre, les points se rapprochent de la droite $y=x$ alors qu'ils sont proches de la courbe de dépendance positive parfaite pour le graphe concernant la copule empirique.
+De la même manière, pour ce graphe du K-plot, on observe une similitude et plusieurs disparités par rapport à celui de la copule empirique. En effet, les points semblent se répartir dans le même espace pour les deux figures (globalement entre la courbe de dépendance positive parfaite et la droite d'indépendance $y=x$). Cela montre une nouvelle fois la dépendance positive entre nos deux séries de données. Cependant, concernant le graphe associé à la copule de Clayton estimée, les variations de la répartition des points sont plus grandes et plus nombreuses. Certains points dépassent en effet la courbe de dépendance positive parfaite et on compte également $14$ oscillations distinctes contre $12$ pour le K-plot de la copule empirique. De plus, pour les espérances de la statistique d'ordre des rangs les plus élevés, les points se rapprochent de la droite $y=x$ alors qu'ils sont proches de la courbe de dépendance positive parfaite pour le graphe concernant la copule empirique.
 
 Ces graphes du Khi-plot et K-plot sont donc d'une certaine façon assez éloignés de ceux obtenus pour la copule empirique.
 
@@ -273,7 +284,7 @@ Le Khi-plot ci-dessus est très proche du Khi-plot obtenu avec la copule empiriq
     \end{center}
 \end{figure}
 
-Le K-plot de la copule de Gumbel estimée et celui de la copule empirique sont très proches. Les points se répartissent dans le même endroit du graphe (entre la droite $y=x$ et la courbe de dépendance positive parfaite). De plus, on compte le même nombre d'oscillations distinctes ($12$) et les dernières espérances de statistique d'ordre sont très proches de la courbe de dépendance positive parfaite pour les deux graphes. 
+Le K-plot de la copule de Gumbel estimée et celui de la copule empirique sont très proches. Les points se répartissent dans le même endroit du graphe (entre la droite $y=x$ et la courbe de dépendance positive parfaite). De plus, on compte le même nombre d'oscillations distinctes ($12$) et les espérances de la statistique d'ordre des rangs les plus élevés sont très proches de la courbe de dépendance positive parfaite pour les deux graphes. 
 
 En appliquant l'algorithme du bootstrap paramétrique, on obtient, toujours pour un seuil de 0,05, $D_n = 0,0324 < 0,0325 = L$. On obtient une p-value de $0,06$. Ainsi, on accepte l'hypothèse nulle et on peut conclure que notre copule empirique fait vraisemblablement partie de la famille des copules de Gumbel.
 
@@ -301,7 +312,7 @@ Bien que la forme du graphe ci-dessus soit proche de celui effectué pour la cop
     \end{center}
 \end{figure}
 
-Le K-plot de la copule de Frank est assez similaire à celui de la copule de Clayton et présente donc les mêmes disparités par rapport à celui de la copule empirique. La différence la plus importante est que, pour les dernières espérances de statistique d'ordre, les points se rapprochent de la droite $y=x$ alors qu'ils sont proches de la courbe de dépendance positive parfaite pour le graphe concernant la copule empirique.
+Le K-plot de la copule de Frank est assez similaire à celui de la copule de Clayton et présente donc les mêmes disparités par rapport à celui de la copule empirique. La différence la plus importante est que, pour les espérances de la statistique d'ordre des rangs les plus élevés, les points se rapprochent de la droite $y=x$ alors qu'ils sont proches de la courbe de dépendance positive parfaite pour le graphe concernant la copule empirique.
 
 Ces graphes du Khi-plot et K-plot sont donc assez éloignés de ceux obtenus pour la copule empirique.
 
@@ -331,9 +342,13 @@ Le Khi-plot de la copule normale estimée est très proche de celui de la copule
     \end{center}
 \end{figure}
 
-Concernant le K-plot de la copule normale estimée, il 
+Concernant le K-plot de la copule normale estimée, il présente quelques différences avec celui associée à la copule empirique. En effet, les oscillations que l'on observe sont beaucoup plus fortes sur le K-plot de la copule normale estimée. De plus, pour ce K-plot, les espérances de la statistique d'ordre des rangs les plus élevés s'approchent de la courbe de dépendance positive maximale mais de façon plus atténuées que pour le K-plot de la copule empirique.
+
+En résumé, bien que le Khi-plot de la copule normale soit très ressemblant avec celui de la copule empirique, le K-plot, lui, ne nous permet pas de conclure. L'algorithme du bootstrap paramétrique va ainsi nous permettre d'affirmer ou non si la copule empirique fait partie de la famille des copules normales. En sortie de cet algorithme, on a, pour un seuil de $0,05$, $D_n = 0,0305 < 0,0310 = L$. De plus, on obtient une p-value de $0,06$. On accepte ainsi l'hypothèse nulle et la copule empirique appartient bien à la famille des copules normales.
 
 \subsection{Copule de Student}
+
+
 
 \section{Méthode des moments : inversion du tau de Kendall}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
