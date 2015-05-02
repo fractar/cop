@@ -94,11 +94,39 @@ Le Khi-plot ci-dessus est très proche du Khi-plot obtenu avec la copule empiriq
     \end{center}
 \end{figure}
 
-Le K-plot de la copule de Gumbel estimée et celui de la copule empirique sont très proches. Les points se répartissent dans le même endroit du graphe (entre la droite $y=x$ et la courbe de dépendance positive parfaite). De plus, on compte le même nombre d'oscillations distinctes ($12$). 
+Le K-plot de la copule de Gumbel estimée et celui de la copule empirique sont très proches. Les points se répartissent dans le même endroit du graphe (entre la droite $y=x$ et la courbe de dépendance positive parfaite). De plus, on compte le même nombre d'oscillations distinctes ($12$) et les dernières espérances de statistique d'ordre sont très proches de la courbe de dépendance positive parfaite pour les deux graphes. 
 
-\subsection{Copule de Franck}
+En appliquant l'algorithme du bootstrap paramétrique, on obtient, toujours pour un seuil de 0,05, $D_n = 0,0324 < 0,0325 = L$. On obtient une p-value de $0,06$. Ainsi, on accepte l'hypothèse nulle et on peut conclure que notre copule empirique fait vraisemblablement partie de la famille des copules de Gumbel.
 
+Ces résultats sur la copule de Gumbel estimée sont satisfaisants. Mais, nous pouvons voir si d'autres copules peuvent encore mieux s'approcher de la copule empirique.
 
+\subsection{Copule de Frank}
+
+L'estimation du paramètre de la copule de Frank par méthode CML est $3,1693$. Avec cette estimation, nous pouvons simuler des données issues d'une copule de Frank ayant cette valeur de paramètre. On obtient alors les graphes du Khi-plot et K-plot de la copule de Frank estimée ci-dessous:
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=17 cm, angle=0]{./pictures/frankcmlkhiplot.png}
+      \centering\caption{\label{2}Khi-plot de la copule de Frank estimée (méthode CML)}
+    \end{center}
+\end{figure}
+
+Bien que la forme du graphe ci-dessus soit proche de celui effectué pour la copule empirique, on peut remarquer plusieurs différences importantes. Tout d'abord, le Khi-plot de la copule de Frank estimée est beaucoup trop "pentu" par rapport à celui de la copule empirique. Les valeurs aux extrêmes ont une ordonnée autour de $0$ et le maximum en ordonnée dépasse les $0,3$ alors que, pour le graphe de la copule empirique, la valeur maximale en ordonnée est autour de $0,3$ et les valeurs aux extrêmes en abscisse sont autour de $0,1$.
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=17 cm, angle=0]{./pictures/frankcmlkplot.png}
+      \centering\caption{\label{2}K-plot de la copule de Frank estimée (méthode CML)}
+    \end{center}
+\end{figure}
+
+Le K-plot de la copule de Frank est assez similaire à celui de la copule de Clayton et présente donc les mêmes disparités par rapport à celui de la copule empirique. La différence la plus importante est que, pour les dernières espérances de statistique d'ordre, les points se rapprochent de la droite $y=x$ alors qu'ils sont proches de la courbe de dépendance positive parfaite pour le graphe concernant la copule empirique.
+
+Ces graphes du Khi-plot et K-plot sont donc assez éloignés de ceux obtenus pour la copule empirique.
+
+Cela est confirmé par l'algorithme du bootstrap paramétrique. On obtient $D_n = 0,049 > 0,025 = L$, pour un seuil de $0,05$. La p-value est nulle. Ainsi, on rejette l'hypothèse nulle et on conclut que la copule empirique ne fait pas partie de la famille des copules de Frank.
 
 \subsection{Copule normale}
 
@@ -113,7 +141,7 @@ Dans cette partie, nous utiliserons la méthode des moments pour estimer le para
 
 \subsection{Copule de Gumbel}
 
-\subsection{Copule de Franck}
+\subsection{Copule de Frank}
 
 \subsection{Copule normale}
 
@@ -150,6 +178,3 @@ TODO   TODO   TODO   TODO
 %%       \centering\caption{\label{2}Logarithme du total des importations de gaz naturel}
 %%     \end{center}
 %% \end{figure}
-
-
-
