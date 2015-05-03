@@ -142,8 +142,7 @@ plot(res,style="perspective",col="blue", theta = 30, phi = 15, main = "densité 
 
 #Khi-Plot
 
-Khiplot<-function(x,y,n,xtitle,ytitle,title) {
-
+Khiplot<-function(x,y,n,xtitle,ytitle,title,ylim) {
 Hi<-rep(NA,n)
 Fi<-rep(NA,n)
 Gi<-rep(NA,n)
@@ -158,10 +157,12 @@ Xi[i]<-(Hi[i]-Fi[i]*Gi[i])/(sqrt(Fi[i]*(1-Fi[i])*Gi[i]*(1-Gi[i])))
 Li[i]<-4*sign((Fi[i]-0.5)*(Gi[i]-0.5))*max((Fi[i]-0.5)^2,(Gi[i]-0.5)^2)
 }
 ind=which(abs(Li) < 4*(1/(n-1)-0.5)^2)	
-plot(Li[ind],Xi[ind],main=title,col="blue",xlab=xtitle,ylab=ytitle)
+plot(Li[ind],Xi[ind],main=title,col="blue",xlab=xtitle,ylab=ytitle,ylim=ylim)
+abline(h=1.78/sqrt(n))
+abline(h=-1.78/sqrt(n))
 }
 #postscript("chi_plot_empir.ps")
-Khiplot(x,y,n,"Li","Xi","Khi-plot empirique")
+Khiplot(x,y,n,"Li","Xi","Khi-plot empirique",ylim=c(-0.5,1))
 #dev.off()
 
 #K-Plot
