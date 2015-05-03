@@ -13,7 +13,6 @@ library("pspearman")
 library("kSamples")
 library("TeachingDemos")
 library("latticeExtra")
-library("asbio")
 
 library("tcltk2")
 
