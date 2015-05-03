@@ -359,9 +359,9 @@ $$
 $$
 
 On peut montrer aisément que $\lambda_i \in [-1,1]$ est une mesure de la distance entre le point $(x_i,y_i)$ et le centre du nuage de points.
+On a aussi que $\chi_i \in [-1,1]$ pour $i \in \{1,...,n\}$.
 
-Notons que, pour éviter les valeurs aberrates, nous ne tracerons que les paires pour lesquelles 
-
+Notons que, pour éviter les valeurs aberrantes, nous ne tracerons que les paires pour lesquelles 
 $$
 |\lambda_i| < 4 \left(  \frac{1}{n-1} -\frac{1}{2} \right)^2
 $$
@@ -376,7 +376,8 @@ Nous traçons dès lors le Khi-plot sur notre échantillon de données.
     \end{center}
 \end{figure}
 
-
+Etant donné que les valeurs en dehors de l'intervalle $\pm \frac{1.78}{\sqrt{n}}$ (pour $\chi_i$) peuvent être considérées comme non indépendantes, on en déduit
+la dépendance existante entre nos deux variables aléatoires réelles $X$ et $Y$. 
 
 \subsection{K-plot ou diagramme de Kendall}
 
@@ -391,7 +392,7 @@ $(Y_1,...,Y_n)$, on peut construire ce diagramme comme suit.
 \begin{enumerate}
 \item pour $i=1,...,n$, on calcule les pseudo-observations $H_i = \frac{1}{n-1} \# \{j \neq i : x_j \leq x_i, y_j \leq y_i \}$
 \item on déduit les statistiques d'ordre associés : $H_{(1)} \leq ... \leq H_{(n)}$
-\item on représente graphiquement les points $(W_{i:n},H_{(i)})$ où $W_{i:n}$ est l'espérance de la i-ème statistique d'odre 
+\item on représente graphiquement les points $(W_{i:n},H_{(i)})$ où $W_{i:n}$ est l'espérance de la i-ème statistique d'ordre 
 d'un échantillon de taille $n$ de la distribution $K_0$ des $H_i$ sous l'hypothèse nulle d'indépendance.
 \end{enumerate}
 
@@ -611,6 +612,8 @@ qui sont des copules elliptiques.
 
 Dans cette section, nous allons utiliser la méthode CML (Canonical Maximum Likelihood, méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin-en-Haut et celles sur Echirolles.
 
+\subsection{Rappel sur la méthode}
+
 Cette méthode a été proposée par Gnest, Ghoudi, et Rivest (1995). Elle est proche de la méthode IFM mais n'implique pas l'estimation des paramètres
 des densités marginales. En effet, les observations $(x_i)_i$ et $(y_i)_i$ sont transformées en marges uniformes $(\widehat{u_i})_i$ et $(\widehat{v_i})_i$ à l'aide
 des fonctions de répartition empiriques.
@@ -762,6 +765,8 @@ On accepte ainsi l'hypothèse nulle et la copule empirique appartient bien à la
 
 Dans cette partie, nous utiliserons la méthode des moments pour estimer le paramètre des copules retenues afin de modéliser la dépendance entre les données sur Saint-Martin et celles sur Echirolles.
 
+\subsection{Rappel sur la méthode}
+
 La méthode des moments utilise les relations existant entre le tau de Kendall (ou d'autres mesures de dépendance comme le rhô de Spearman) et les paramètres des
 copules. Il est utilisé particulièrement lors de la détermination des paramètres des copules archimédiennes
 et elliptiques en raison du déterminisme de certaines relations.
@@ -810,7 +815,7 @@ La copule de Frank admet la relation suivante :
 $$
 \tau = 1 - 4 \theta^{-1} (1-D_1(\theta))
 $$
-avec $D_1$ la fonction Debye (cf. Abramowitz et Stegun (1970)). Etant difficile à calculer, nous utilison directement la méthode numérique 
+avec $D_1$ la fonction Debye (cf. Abramowitz et Stegun (1970)). Etant difficile à calculer, nous utilisons directement la méthode numérique 
 afin déterminer une estimation du paramètre $\theta$.
 
 
@@ -849,9 +854,12 @@ des copules :
 
 \subsection{Méthode du maximum de vraisemblance}
 
+\subsection{Rappel sur la méthode}
+
+
 \subsection{Méthode IFM (Inference Function for Margins)}
 
-
+\subsection{Rappel sur la méthode}
 
 \section{Test graphique d'adéquation à la copule : le Kendall plot}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
