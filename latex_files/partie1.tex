@@ -318,7 +318,8 @@ En pratique, pour étudier les dépendances de queues sur nos données, nous uti
 (2005) qui s'expriment comme suit :
 
 $$
-\widehat{\lambda_L}\left(\frac{i}{n}\right) = \frac{C_n(\frac{i}{n},\frac{i}{n})}{\frac{i}{n}}
+\widehat{\lambda_L}\left(\frac{i}{n}\right) = \frac{C_n(\frac{i}{n},\frac{i}{n})}{\frac{i}{n}}    \text{~~~et~~~} 
+\widehat{\lambda_U}\left(\frac{i}{n}\right) = \frac{1-\frac{2i}{n} + C_n(\frac{i}{n},\frac{i}{n})}{ 1 - \frac{i}{n}}
 $$
 où $i \in [1,n-1]$ et $C_n$ estimateur de la copule.
 
@@ -363,12 +364,27 @@ empirique d'ordre n $C_n$ converge asymptotiquement vers la copule $C$ d'après 
 Une fois la copule empirique calculée, nous pouvons tout d'abord tracer un graphique 3D afin d'avoir une
 idée de la forme de notre copule :
 
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=14 cm, angle=0]{./pictures/copule_empirique.png}
+      \centering\caption{\label{graph_cop_empir}Fonction de répartition de la copule empirique}
+    \end{center}
+\end{figure}
 
 
-
-Le graphique 3D d'une copule empirique tel que tracé sur le graphique 18 est difficilement exploitable.
+Le graphique 3D d'une copule empirique tel que tracé sur la figure \ref{graph_cop_empir} est difficilement exploitable.
 Nous allons donc devoir construire d'autres indicateurs plus visuels d'où il sera possible de tirer des
 informations utiles à la sélection de notre copule théorique.
+
+
+\subsection{Histogramme 3D}
+
+
+\subsection{Dépendance de queue}
+
+
+\subsection{Densité de la copule empirique}
 
 
 

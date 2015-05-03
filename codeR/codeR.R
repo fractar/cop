@@ -79,14 +79,17 @@ contour(u,v,fdr,col="blue")
 persp(u, v, fdr, theta = 30, phi = 15, expand = 0.7, col = "blue", main = "fdr de la copule empirique (Nelsen)") 
 
 
-
-
-
-
-
-
-
-
+# étude de la dépendance de queue
+u<-(1:(n-1))/n
+lambda_L = fdrr(u,u) /u
+lambda_U = (1-2*u+fdrr(u,u)) / (1-u)
+#postscript("dependance_queue_empir.ps")
+par(mfrow=c(1,2))
+plot(u,lambda_L,type="l",col="blue",xlab="u",ylab="lambda_L",main="Estimation des dépendances de queue à gauche")
+abline(h=0.22)
+plot(u,lambda_U,type="l",col="blue",xlab="u",ylab="lambda_U",main="Estimation des dépendances de queue à droite")
+abline(h=0.31)
+#dev.off()
 
 # densité de la copule empirique 
 
