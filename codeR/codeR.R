@@ -165,9 +165,9 @@ Khiplot(x,y,n,"Li","Xi","Khi-plot empirique")
 #dev.off()
 
 #K-Plot
-
-BiCopKPlot(Rx/n,Ry/n)
-
+#postscript("K_plot_empir.ps")
+BiCopKPlot(Rx/n,Ry/n,col="blue",main="K-plot empirique")
+#dev.off()
 
 #test classique d'indépendance
 statT = cor(x,y)*sqrt(n-2)/sqrt(1-cor(x,y)^2)
