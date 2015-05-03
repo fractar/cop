@@ -611,7 +611,19 @@ qui sont des copules elliptiques.
 
 Dans cette section, nous allons utiliser la méthode CML (Canonical Maximum Likelihood, méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin-en-Haut et celles sur Echirolles.
 
-En effet, à l'aide de cette méthode, on peut obtenir une estimation du paramètre de la copule sans se soucier des marginales. Pour cela, il suffit d'utiliser la fonction \textit{fitcopula} de R en passant comme arguments les rangs sur nos deux groupes de données translatés sur $[0;1]$ et un point de départ de l'algorithme. Ce point de départ sera l'estimation du paramètre de la copule obtenue par la méthode des moments. Avec l'estimation du paramètre obtenue en sortie de notre algorithme, on peut alors créer notre copule estimée.
+En effet, à l'aide de cette méthode, on peut obtenir une estimation du paramètre de la copule sans se soucier des marginales. 
+
+Cette méthode a été proposée par Gnest, Ghoudi, et Rivest (1995). Elle est proche de la méthode IFM mais n'implique pas l'estimation des paramètres
+des densités marginales. En effet, les observations $(x_i)_i$ et $(y_i)_i$ sont transformées en marges uniformes $(\widehat{u_i})_i$ et $(\widehat{v_i})_i$ à l'aide
+des fonctions de répartition empiriques.
+
+L'estimateur $\widehat{\theta}_{CML}$, appelé aussi estimateur "omnibus" est déterminé par :
+$$
+\widehat{\theta}_{CML} = \operatorname{argmax} \left[ \sum_{i=1}^n \operatorname{ln} \left(c(\widehat{u_i},\widehat{v_i};\theta_C) \right)  \right]
+$$ 
+
+
+Pour le calculer dans $R$, il suffit d'utiliser la fonction \lstinline!fitcopula! de R en passant comme arguments les rangs sur nos deux groupes de données translatés sur $[0;1]$ et un point de départ de l'algorithme. Ce point de départ sera l'estimation du paramètre de la copule obtenue par la méthode des moments. Avec l'estimation du paramètre obtenue en sortie de notre algorithme, on peut alors créer notre copule estimée.
 
 \subsection{Copule de Clayton}
 
