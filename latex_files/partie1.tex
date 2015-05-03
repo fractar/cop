@@ -51,9 +51,60 @@ Nous allons donc chercher la copule qui s’adapte le mieux à nos données.
 
 \subsection{Observation graphique}
 
+Il est maintenant temps de considérer la structure empirique des échantillons. Avant de tracer les diagrammes représentatifs de 
+la dépendance des données, nous allons exposer quelques notions.
+
+
+\subsubsection{Fonctions de répartition empiriques}
+
+Le cadre général de l’estimation non paramétrique des loi marginales $F$ et $G$ s’appuie sur les fonctions de répartition empiriques, définies par :
+
+$$
+F_n(x) = \frac{1}{n} \sum_{i=1}^n \mathbb{1}_{x_i \leq x}
+\text{~~~~et~~~~}
+G_n(x) = \frac{1}{n} \sum_{i=1}^n \mathbb{1}_{y_i \leq y}
+$$
+
+pour un n-échantillon de la loi $F$ et n-échantillon de la loi $G$.
+
+Ainsi, nous noterons respectivement $F_n$ et $G_n$ les fonctions de répartion empiriques des marginales $F$ et $G$.
 
 
 \subsubsection{Scatter plot et Rank-rank plot}
+
+Nous allons tout d'abord déterminer le dépendogramme relatif à nos données.
+Il représente la structure de dépendance sous la forme d'un nuage de points des marges uniformes $(u,v)$ extraites de l'échantillon.
+
+En d'autres termes, il s'agit tout simplement d'un scatter plot faisant figurer les marges empiriques relatives à l'échantillon
+$(y_i )_i$ en fonction des marges empiriques relatives à l'échantillon $(x_i)_i$, soit le scatter plot des points suivants $(\hat{u},\hat{v})$.
+Ces marges uniformes sont définies par les statistiques de rang issues de l'échantillon. C'est-à-dire, pour tous les $\hat{u}, \hat{v}$, nous utilisons 
+les fonctions de répartition empiriques $F_n$ et $G_n$ calculées en $x_i$ et $y_i$ respectivement.
+
+Par définition d'une marge uniforme, on a $F(x) = u$ et donc : 
+
+
+Pour $1\leq i \leq 1$,
+$$
+\widehat{u_i} = F_n(x_i) = \frac{1}{n} \sum_{k=1}^n \mathbb{1}_{x_k \leq x_i}
+$$
+
+De la même manière, on a :
+
+Pour $1\leq i \leq 1$,
+$$
+\widehat{v_i} = G_n(y_i) = \frac{1}{n} \sum_{k=1}^n \mathbb{1}_{y_k \leq y_i}
+$$
+
+Autrement écrit, cela revient à poser :
+
+$$
+\widehat{u_i} = \frac{r_i}{n} \text{~~~~et~~~~} \widehat{v_i} = \frac{s_i}{n}
+$$
+où $r_i$ est le rang de $x_i$ parmi $x_1,...,x_n$ et $s_i$ est le rang de $y_i$ parmi $y_1,...,y_n$ .
+
+
+Nous traçons donc le diagramme de dispersion des points $(x_i,y_i)_{1\leq i \leq n}$ (en anglais "scatter plot") et 
+le dépendogramme (ou graphique des rangs, ou en anglais "rank-rank plot"), graphique des points $\left( \frac{r_i}{n}, \frac{s_i}{n}\right)_{1\leq i \leq n}$.
 
 \noindent%
 \begin{figure}[H]
@@ -100,7 +151,7 @@ On a alors :
 \item $X$ et $Y$ sont non corrélées linéairement $\Longleftrightarrow \rho(X,Y) = 0$
 \end{itemize}
 
-Le coefficient de corrélation de Pearson est la mesure la plus connue. Mais il constitute une mesure très imparfaite de la dépendance. Il ne
+Le coefficient de corrélation de Pearson est la mesure la plus connue. Mais il constitue une mesure très imparfaite de la dépendance. Il ne
 peut se mettre sous une forme ne faisant intervenir que la copule, les marginales restent présentent dans l’expression : ce coefficient n’est donc
 pas une mesure de dépendance.
 
@@ -109,7 +160,14 @@ De plus, il n’intègre que la composante linéaire de la dépendance, au sens 
 Enfin, on peut montrer (en utilisant l'inégalité de Tchen) que, pour les marginales fixées, toutes les valeurs
 comprises entre -1 et +1 ne sont pas atteignables.
 
-Ainsi, on retiendra que ce coefficient mesure mal une association non-linéaire, qu'il est trop sensible aux valeurs extrêmes et qu'il ne mesure pas vraiment la distance à l'indépendance.
+Ainsi, on retiendra que ce coefficient :
+
+\begin{itemize}
+\item mesure mal une association non-linéaire
+\item est trop sensible aux valeurs extrêmes 
+\item ne mesure pas vraiment la distance à l'indépendance
+\item n'est pas toujours défini (Cauchy par exemple).
+\end{itemize}
 
 Pour remédier à cela, nous avons recours à d’autres indicateurs de dépendance se basant sur les rangs et les concordances observés de notre échantillon de données. 
 Ainsi, nous utilisons des coefficients de corrélation non linéaires, comme le rhô de Spearman ou le tau de Kendall.
@@ -186,12 +244,30 @@ $$
 
 \section{Méthode non paramétrique d'estimation : la copule empirique}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Choix d'une copule théorique}
+\subsection{Fonction de répartition empirique}
 
+Le cadre général de l’estimation non paramétrique d’une loi marginale s’appuie sur la fonction de répartition empirique, définie par :
 
+$$
+F_n(x) = \frac{1}{n} \sum_{i=1}^n \mathbb{1}_{x_i \leq x}
+$$
 
+pour un n-échantillon de la loi $F$. En dimension 2, si on se donne $(x_i,y_i)_{1\leq i\leq n}$ un n-échantillon du vecteur de dimension 2 (X,Y), on peut 
+généraliser la fonction de répartition empirique en posant :
 
+$$F_n(x,y) = \frac{1}{n} \sum_{i=1}^n \mathbb{1}_{x_i \leq x, y_i \leq y}$$
 
+Cet estimateur conduit à un estimateur non paramétrique naturel d’une copule.
+
+\subsection{Copule empirique}
+
+La copule empirique a été introduite par Paul Deheuvels (1979). 
+
+La copule empirique d'un n-échantillon $(x_i,y_i)_{1\leq i\leq n}$ est définie par :
+
+$$
+\widehat{C}\left( \frac{t_1}{n},\frac{t_2}{n}\right)
+$$
 
 
 
@@ -216,11 +292,8 @@ des copules :
 \section{Méthode semi-paramétrique d'estimation (CML)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<<<<<< HEAD
-Dans cette section, nous allons utiliser la méthode CML (méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin-en-Haut et celles sur Echirolles.
-=======
-Dans cette section, nous allons utiliser la méthode CML (Canonical Maximum Likelihood, méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin et celles sur Echirolles.
->>>>>>> 64aab4bba611830b92856ac23f29641a2cc0e5e3
+Dans cette section, nous allons utiliser la méthode CML (Canonical Maximum Likelihood, méthode semi-paramétrique) afin d'estimer le paramètre des différentes copules retenues pour modéliser la dépendance entre les données sur Saint-Martin-en-Haut et celles sur Echirolles.
+
 En effet, à l'aide de cette méthode, on peut obtenir une estimation du paramètre de la copule sans se soucier des marginales. Pour cela, il suffit d'utiliser la fonction \textit{fitcopula} de R en passant comme arguments les rangs sur nos deux groupes de données translatés sur $[0;1]$ et un point de départ de l'algorithme. Ce point de départ sera l'estimation du paramètre de la copule obtenue par la méthode des moments. Avec l'estimation du paramètre obtenue en sortie de notre algorithme, on peut alors créer notre copule estimée.
 
 \subsection{Copule de Clayton}
