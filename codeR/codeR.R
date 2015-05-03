@@ -291,6 +291,7 @@ thetaN<-coef(CML)
 
 fitClaytonCopula<-claytonCopula(thetaN,dim=2)
 
+
 #Khi-plot de la copule de Clayton estimé
 
 number = 1000
@@ -303,6 +304,12 @@ Khiplot(XClayton,YClayton,number,"Li","Xi","Khi-plot de la copule de Clayton est
 KplotXRank<-rank(XClayton,ties.method="random")
 KplotYRank<-rank(YClayton,ties.method="random")
 BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule de Clayton estimée (méthode CML)")
+
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitClaytonCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
 
 #Bootstrap paramétrique par CML
 
@@ -447,6 +454,11 @@ KplotXRank<-rank(XNormal,ties.method="random")
 KplotYRank<-rank(YNormal,ties.method="random")
 BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule normale estimée (méthode CML)")
 
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitNormalCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
 
 #Bootstrap paramétrique par la méthode CML
 
@@ -588,7 +600,7 @@ myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
 params<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula,method="ml")
 df<-coef(params)[2]
 myStudentCopula<-tCopula(param=paramStudent,df=df,dim=2)
-CLM<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula)
+CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula)
 
 thetaN<-coef(CML)[1]
 df<-coef(CML)[2]
@@ -607,6 +619,12 @@ Khiplot(XStudent,YStudent,number,"Li","Xi","Khi-plot de la copule de Student est
 KplotXRank<-rank(XStudent,ties.method="random")
 KplotYRank<-rank(YStudent,ties.method="random")
 BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule de Student estimée (méthode CML)")
+
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitStudentCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
 
 
 #Bootstrap paramétrique par la méthode CML
@@ -759,6 +777,12 @@ KplotXRank<-rank(XGumbel,ties.method="random")
 KplotYRank<-rank(YGumbel,ties.method="random")
 BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule de Gumbel estimée (méthode CML)")
 
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitGumbelCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
+
 
 #Bootstrap paramétrique par la méthode CML
 
@@ -909,6 +933,12 @@ Khiplot(XFrank,YFrank,number,"Li","Xi","Khi-plot de la copule de Frank estimée 
 KplotXRank<-rank(XFrank,ties.method="random")
 KplotYRank<-rank(YFrank,ties.method="random")
 BiCopKPlot(KplotXRank/(number),KplotYRank/(number),main="K-plot de la copule de Frank estimée (méthode CML)")
+
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitFrankCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
 
 
 #Bootstrap paramétrique par la méthode CML
