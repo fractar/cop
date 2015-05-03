@@ -232,7 +232,7 @@ myClaytonCopula<-claytonCopula(param=paramClayton)
 
 #Khi-plot de la copule de Clayton estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,myClaytonCopula)
 XClayton<-randomEstime[,1]
 YClayton<-randomEstime[,2]
@@ -308,7 +308,7 @@ fitClaytonCopula<-claytonCopula(thetaN,dim=2)
 
 #Khi-plot de la copule de Clayton estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,fitClaytonCopula)
 XClayton<-randomEstime[,1]
 YClayton<-randomEstime[,2]
@@ -388,7 +388,7 @@ myNormalCopula<-normalCopula(param=paramNormal)
 
 #Khi-plot de la copule gaussienne estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,myNormalCopula)
 XNormal<-randomEstime[,1]
 YNormal<-randomEstime[,2]
@@ -457,7 +457,7 @@ fitNormalCopula<-normalCopula(thetaN,dim=2)
 
 #Khi-plot de la copule gaussienne estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,fitNormalCopula)
 XNormal<-randomEstime[,1]
 YNormal<-randomEstime[,2]
@@ -539,7 +539,7 @@ myStudentCopula<-tCopula(param=paramStudent,df=floor(df),dim=2)
 
 #Khi-plot de la copule de Student estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,myStudentCopula)
 XStudent<-randomEstime[,1]
 YStudent<-randomEstime[,2]
@@ -623,7 +623,7 @@ fitStudentCopula<-tCopula(param=thetaN,dim=2,df=floor(df))
 
 #Khi-plot de la copule de Student estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,fitStudentCopula)
 XStudent<-randomEstime[,1]
 YStudent<-randomEstime[,2]
@@ -707,7 +707,7 @@ myGumbelCopula<-gumbelCopula(param=paramGumbel)
 
 #Khi-plot de la copule de Gumbel estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,myGumbelCopula)
 XGumbel<-randomEstime[,1]
 YGumbel<-randomEstime[,2]
@@ -780,7 +780,7 @@ fitGumbelCopula<-gumbelCopula(thetaN,dim=2)
 
 #Khi-plot de la copule de Gumbel estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,fitGumbelCopula)
 XGumbel<-randomEstime[,1]
 YGumbel<-randomEstime[,2]
@@ -863,7 +863,7 @@ fitFrankCopula<-frankCopula(thetaN,dim=2)
 
 #Khi-plot de la copule de Frank estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,fitFrankCopula)
 XFrank<-randomEstime[,1]
 YFrank<-randomEstime[,2]
@@ -937,7 +937,7 @@ fitFrankCopula<-frankCopula(thetaN,dim=2)
 
 #Khi-plot de la copule de Frank estimé
 
-number = 1000
+number = 633
 randomEstime<-rCopula(number,fitFrankCopula)
 XFrank<-randomEstime[,1]
 YFrank<-randomEstime[,2]
