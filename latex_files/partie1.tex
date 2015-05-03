@@ -102,6 +102,8 @@ $$
 $$
 où $r_i$ est le rang de $x_i$ parmi $x_1,...,x_n$ et $s_i$ est le rang de $y_i$ parmi $y_1,...,y_n$ .
 
+\underline{Remarque} : par la suite et par souci de simplification des notations, nous noterons les estimations des marginales $\widehat{u}$ 
+et $\widehat{v}$ : $u$ et $v$.
 
 Nous traçons donc le diagramme de dispersion des points $(x_i,y_i)_{1\leq i \leq n}$ (en anglais "scatter plot") et 
 le dépendogramme (ou graphique des rangs, ou en anglais "rank-rank plot"), graphique des points $\left( \frac{r_i}{n}, \frac{s_i}{n}\right)_{1\leq i \leq n}$.
@@ -114,8 +116,13 @@ le dépendogramme (ou graphique des rangs, ou en anglais "rank-rank plot"), grap
     \end{center}
 \end{figure}
 
+Au vu du dépendogramme, il semble que les dépendances entre les forces du vent relevées par les deux stations sur la période d'étude soit positive mais modérée. 
+En effet, le dépendogramme a une forme d'ellipse dont le grand axe serait dans la direction de la première bissectrice.
+On observe un regroupement de points sur la queue à gauche et un regroupement de points sur la queue à droite. On peut donc supposer qu'il y ait une dépendance de queue à gauche 
+et à droite. Cependant, cette approche restant limitée, on ne se limitera pas à l'étude des modèles de copules présentant cette seule caractéristique mais à un ensemble de copules
+pouvant représenter cette dépendance positive, sur la queue supérieure et/ou inférieure de la distribution.
 
-
+Nous allons dès à présent nous intéresser à la mesure de cette dépendance. 
 
 \subsection{Mesurer la dépendance}
 
@@ -163,11 +170,20 @@ comprises entre -1 et +1 ne sont pas atteignables.
 Ainsi, on retiendra que ce coefficient :
 
 \begin{itemize}
-\item mesure mal une association non-linéaire
-\item est trop sensible aux valeurs extrêmes 
-\item ne mesure pas vraiment la distance à l'indépendance
+\item mesure mal une association non-linéaire,
+\item est trop sensible aux valeurs extrêmes,
+\item ne mesure pas vraiment la distance à l'indépendance,
 \item n'est pas toujours défini (Cauchy par exemple).
 \end{itemize}
+
+Pour nos deux échantillons de données, on obtient la valeur suivante pour le coefficient de Pearson :
+
+\begin{center}
+\fbox{$\rho(X,Y) = 0,524 $}
+\end{center}
+
+Cette valeur positive laisse à penser, conformément au dépendogramme, que les relevés de la station d'Echirolles et ceux de la station de Saint-Martin-en-Haut ont une dépendance positive. Mais ce resultat reste relativement peu fiable pour les raisons citées, principalement par le fait que les variables d'intérêt présentent une dépendance non linéaire.
+
 
 Pour remédier à cela, nous avons recours à d’autres indicateurs de dépendance se basant sur les rangs et les concordances observés de notre échantillon de données. 
 Ainsi, nous utilisons des coefficients de corrélation non linéaires, comme le rhô de Spearman ou le tau de Kendall.
@@ -205,6 +221,13 @@ $$
 	
 Le $\rho$ de Spearman élimine par construction l’effet de dépendance aux lois marginales.
 
+Sur nos données, on obtient la valeur suivante pour le rhô de Spearman :
+
+\begin{center}
+\fbox{$\rho_s(X,Y) = 0,465 $}
+\end{center}
+
+Cette valeur positive confirme la dépendance positive modérée entre les variables aléatoires $X$ (Saint-Martin-en-Haut) et $Y$ (Echirolles).
 
 \subsubsection{Tau de Kendall}
 
@@ -240,7 +263,13 @@ $$
 X \text{~et~} Y \text{~indépendantes~} \Longrightarrow \tau(X,Y) = 0
 $$
 
+Sur nos données, on obtient la valeur suivante pour le tau de Kendall :
 
+\begin{center}
+\fbox{$\tau(X,Y) = 0,344 $}
+\end{center}
+
+Cette valeur positive confirme, une fois de plus, la dépendance positive modérée entre les variables aléatoires $X$ (Saint-Martin-en-Haut) et $Y$ (Echirolles).
 
 \section{Méthode non paramétrique d'estimation : la copule empirique}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
