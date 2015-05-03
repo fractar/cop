@@ -752,7 +752,7 @@ On accepte ainsi l'hypothèse nulle et la copule empirique appartient bien à la
 
 Dans cette partie, nous utiliserons la méthode des moments pour estimer le paramètre des copules retenues afin de modéliser la dépendance entre les données sur Saint-Martin et celles sur Echirolles.
 
-La méthode des moments utilise les relations existant entre le tau de Kendall et les paramètres des
+La méthode des moments utilise les relations existant entre le tau de Kendall (ou d'autres mesures de dépendance comme le rhô de Spearman) et les paramètres des
 copules. Il est utilisé particulièrement lors de la détermination des paramètres des copules archimédiennes
 et elliptiques en raison du déterminisme de certaines relations.
 
@@ -778,6 +778,8 @@ $$
 \widehat{\theta} = \frac{2 \widehat{\tau}}{1 - \widehat{\tau}}
 $$
 
+Nous pouvons ainsi généraliser cette méthode à d’autres fonctions copules et d’autres mesures de dépendance.
+
 \subsection{Copule de Clayton}
 
 On rappelle l'expression trouvée précédemment pour l'estimation du paramètre $\theta$ par la méthode des moments :
@@ -787,15 +789,42 @@ $$
 
 \subsection{Copule de Gumbel}
 
-%Pour la copule de Gumbel, 
-
+Pour la copule de Gumbel, nous avons l'estimation :
+$$
+\widehat{\theta} = \frac{1}{1-\widehat{\tau}}
+$$
 
 \subsection{Copule de Frank}
 
+La copule de Frank admet la relation suivante :
+$$
+\tau = 1 - 4 \theta^{-1} (1-D_1(\theta))
+$$
+avec $D_1$ la fonction Debye (cf. Abramowitz et Stegun (1970)). Etant difficile à calculer, nous utilison directement la méthode numérique 
+afin déterminer une estimation du paramètre $\theta$.
+
+
 \subsection{Copule normale}
+
+La détermination d'une relation liant le tau de Kendall au paramètre de la copule pour les copules elliptiques est démontrée par Lindskog, McNeil,
+et Schmock (2003). Ils généralisent plus exactement aux copules elliptiques une relation déjà connue
+pour les copules gaussiennes. 
+La copule normale admet la relation suivante :
+$$
+\tau = \frac{2}{\pi} \operatorname{arcsin}(\rho)
+$$
+Cela implique :
+$$
+\widehat{\rho} = \operatorname{sin}\left(\frac{\widehat{\tau} \pi}{2} \right)
+$$
+
 
 \subsection{Copule de Student}
 
+L'estimation du paramètre de corrélation pour la copule de Student a la même expression que celle pour la copule normale, ie :
+$$
+\widehat{\rho} = \operatorname{sin}\left(\frac{\widehat{\tau} \pi}{2} \right)
+$$
 
 \section{Méthode paramétriques d'estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
