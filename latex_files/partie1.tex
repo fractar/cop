@@ -271,34 +271,104 @@ Sur nos données, on obtient la valeur suivante pour le tau de Kendall :
 
 Cette valeur positive confirme, une fois de plus, la dépendance positive modérée entre les variables aléatoires $X$ (Saint-Martin-en-Haut) et $Y$ (Echirolles).
 
+
+
+\subsection{Dépendance de queue}
+
+Ce concept est important car les mesures de dépendance traditionnelles ne sont pas adaptées à la
+dépendance des queues de distribution. 
+
+La dépendance de queue va nous aider à sélectionner les copules nous permettant de modéliser au mieux la structure de dépendance entre nos variables 
+aléatoires réelles $X$ et $Y$. 
+
+En effet, elle mesure la probabilité de réalisations extrêmes simultanées. En vulgarisant, nous parlerons alors
+de dépendance de queue à gauche et de dépendance de queue à droite pour désigner respectivement la
+probabilité d'être dans la queue de distribution gauche de la loi marginale $F$ sachant que nous nous trou-
+vons dans la distribution gauche de la loi marginale $G$ et la probabilité d'être dans la queue de distribution
+droite de la loi marginale $F$ sachant que nous nous trouvons dans la distribution droite de la loi marginale
+$F$. Si cette dépendance est égale à 0, alors les extrêmes sont indépendants. Si elle est égale à 1, alors les
+extrêmes sont parfaitement corrélés. 
+
+La dépendance de queue est par conséquent une mesure de corrélation des extrêmes.
+
+D'un point de vue mathématique, nous avons la définition des coefficients de dépendance de queue suivante.
+~\\~
+\begin{itemize}
+\item Une copule $C$ a une dépendance de queue à gauche si :
+
+$$
+\lambda_L = \underset{u \rightarrow 0^+}{\operatorname{lim}} \frac{C(u,u)}{u} \neq 0 \text{~~et~~} \lambda_L \in (0,1]
+$$
+
+Si $\lambda_L =0$ alors la copule n'a pas de dépendance de queue à gauche. Sinon, les queues de distribution de $X$ et $Y$ sont asymptotiquement
+dépendantes à gauche.
+~\\~
+\item Une copule $C$ a une dépendance de queue à droite si :
+
+$$
+\lambda_U= \underset{u \rightarrow 1^-}{\operatorname{lim}} \frac{1-2u + C(u,u)}{1-u} \neq 0 \text{~~et~~} \lambda_U \in (0,1]
+$$
+
+Si $\lambda_U =0$ alors la copule n'a pas de dépendance de queue à droite. Sinon, les queues de distribution de $X$ et $Y$ sont asymptotiquement
+dépendantes à droite.
+
+\end{itemize}
+
+En pratique, pour étudier les dépendances de queues sur nos données, nous utilisons les estimateurs définis par Caillault et Guégan
+(2005) qui s'expriment comme suit :
+
+$$
+\widehat{\lambda_L}\left(\frac{i}{n}\right) = \frac{C_n(\frac{i}{n},\frac{i}{n})}{\frac{i}{n}}
+$$
+où $i \in [1,n-1]$ et $C_n$ estimateur de la copule.
+
+Ainsi, nous allons définir un estimateur de la copule (estimateur donnant la copule empirique) et effectuerons l'application numérique sur notre échantillon 
+dans la section ci-après.
+
+
 \section{Méthode non paramétrique d'estimation : la copule empirique}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Fonction de répartition empirique}
 
-Le cadre général de l’estimation non paramétrique d’une loi marginale s’appuie sur la fonction de répartition empirique, définie par :
-
-$$
-F_n(x) = \frac{1}{n} \sum_{i=1}^n \mathbb{1}_{x_i \leq x}
-$$
-
-pour un n-échantillon de la loi $F$. En dimension 2, si on se donne $(x_i,y_i)_{1\leq i\leq n}$ un n-échantillon du vecteur de dimension 2 (X,Y), on peut 
-généraliser la fonction de répartition empirique en posant :
-
-$$F_n(x,y) = \frac{1}{n} \sum_{i=1}^n \mathbb{1}_{x_i \leq x, y_i \leq y}$$
-
-Cet estimateur conduit à un estimateur non paramétrique naturel d’une copule.
-
-\subsection{Copule empirique}
+\subsection{Copule empirique de Deheuvels}
 
 La copule empirique a été introduite par Paul Deheuvels (1979). 
 
-La copule empirique d'un n-échantillon $(x_i,y_i)_{1\leq i\leq n}$ est définie par :
+Cette méthode repose sur le rang des observations pour extraire ensuite la
+structure de dépendance.
 
+On se place dans notre cas où l'on a un échantillon bivarié.
+
+Soit $(x_i,y_i)_{1 \leq i \leq n}$ un échantillon d'observation de taille $n$ de $(X,Y)$ 
+et soit $(r_i,s_i)_{1 \leq i \leq n}$ la statistique de rang associé à cet échantillon bivarié.
+
+La copule empirique de Deheuvels, dans le cas bivarié, est définie sur l'ensemble $\left \{ \left( \frac{i}{n} , \frac{j}{n} \right) , 0 \leq i,j \leq n   \right \}$ 
+par l'équation suivante :
+\begin{eqnarray*}
+C_n \left( \frac{i}{n},\frac{j}{n}\right) &=& \frac{1}{n} \sum_{k=1}^n \mathbb{1}_{r_k \leq i} \mathbb{1}_{s_k \leq j} \\
+ &=& \frac{1}{n} \sum_{k=1}^n \mathbb{1}_{ \{r_k \leq i\} \cap \{ s_k \leq j\} } 
+\end{eqnarray*}
+
+Finalement, similairement au calcul de la fonction de répartition empirique, la formule ci-dessus sur l'ensemble $\left \{ \left( \frac{i}{n} , \frac{j}{n} \right) , 0 \leq i,j \leq n   \right \}$ revient à écrire :
+
+$\forall (u,v) \in [0,1]^2$,
 $$
-\widehat{C}\left( \frac{t_1}{n},\frac{t_2}{n}\right)
+C_n(u,v) = \frac{1}{n} \sum_{k=1}^n \mathbb{1}_{ \{ \frac{r_k}{n} \leq u\} \cap \{ \frac{s_k}{n} \leq v\} } 
 $$
 
+La copule empirique n’est autre que la fonction de répartition bivariée associée au nuage de point $\left( \frac{r_i}{n},\frac{s_i}{n} \right )_{1 \leq i \leq n}$.
 
+Cet estimateur possède l'avantage de ne pas dépendre des distributions marginales. De plus, la copule
+empirique d'ordre n $C_n$ converge asymptotiquement vers la copule $C$ d'après Faivre (2002).
+
+Une fois la copule empirique calculée, nous pouvons tout d'abord tracer un graphique 3D afin d'avoir une
+idée de la forme de notre copule :
+
+
+
+
+Le graphique 3D d'une copule empirique tel que tracé sur le graphique 18 est difficilement exploitable.
+Nous allons donc devoir construire d'autres indicateurs plus visuels d'où il sera possible de tirer des
+informations utiles à la sélection de notre copule théorique.
 
 
 
