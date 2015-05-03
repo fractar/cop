@@ -777,9 +777,15 @@ $$
 $$
 avec $\phi$ la fonction génératrice de la copule.
 
-Pour la copule de Clayton, nous avons :
+Par exemple, pour la copule de Clayton, nous avons 
+
+pour $\theta \in [-1,+\infty[ ~\setminus \{0\}$ :
 $$
-\tau = 1 + 4 \int_0^1 \frac{\phi(u)}{\phi'(u)} = 1 + 4 \int_0^1 \frac{u^{-1} - 1}{-\theta u^{-\theta -1}} du = 1 + \frac{4}{\theta} \int_0^1 (u^{\theta + 1 -u}) du
+\phi (u) = \frac{u^{-\theta}-1}{\theta}
+$$
+On peut donc calculer le tau de Kendall :
+$$
+\tau = 1 + 4 \int_0^1 \frac{\phi(u)}{\phi'(u)} = 1 + 4 \int_0^1 \frac{u^{-\theta} - 1}{-\theta u^{-\theta -1}} du = 1 + \frac{4}{\theta} \int_0^1 (u^{\theta + 1}-u) du
 = 1 + \frac{4}{\theta} \left [  \frac{u^{\theta +2}}{\theta +2} - \frac{u^2}{2} \right ]_0^1 = 1 +\frac{4}{\theta} \left [ \frac{1}{\theta + 2} - \frac{1}{2}\right ]
 $$
 
@@ -854,12 +860,12 @@ des copules :
 
 \subsection{Méthode du maximum de vraisemblance}
 
-\subsection{Rappel sur la méthode}
+\subsubsection{Rappel sur la méthode}
 
 
 \subsection{Méthode IFM (Inference Function for Margins)}
 
-\subsection{Rappel sur la méthode}
+\subsubsection{Rappel sur la méthode}
 
 \section{Test graphique d'adéquation à la copule}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
