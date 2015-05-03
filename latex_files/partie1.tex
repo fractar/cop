@@ -380,9 +380,35 @@ Nous traçons dès lors le Chi-plot sur notre échantillon de données.
 
 \subsection{K-plot ou diagramme de Kendall}
 
+Le diagramme de Kendall est un aussi outil intéressant lorsque que l'on veut étudier la dépendance entre les variables d'intérêts.
 
+Le K-plot introduit par Genest et Boies (2003) est l'équivalent pour les copules du Q-Q Plot pour les
+densités univariées.
 
-Nous pouvons maintenant tracer le K-plot sur notre échantillon de données.
+Pour détecter la dépendance entre deux variables $X$ et $Y$ dont les observations sont données par les vecteurs aléatoires $(X_1,...,X_n)$ et
+$(Y_1,...,Y_n)$, on peut construire ce diagramme comme suit.
+
+\begin{enumerate}
+\item pour $i=1,...,n$, on calcule les pseudo-observations $H_i = \frac{1}{n-1} \# \{j \neq i : x_j \leq x_i, y_j \leq y_i \}$
+\item on déduit les statistiques d'ordre associés : $H_{(1)} \leq ... \leq H_{(n)}$
+\item on représente graphiquement les points $(W_{i:n},H_{(i)})$ où $W_{i:n}$ est l'espérance de la i-ème statistique d'odre 
+d'un échantillon de taille $n$ de la distribution $K_0$ des $H_i$ sous l'hypothèse nulle d'indépendance.
+\end{enumerate}
+
+En utilisant des résultats classiques sur les statistiques d’ordre, on obtient que $W_{i:n}$ est égal à :
+
+$$
+W_{i:n}= n {n-1 \choose i-1} \int\limits_{0}^1 \omega k_0(\omega) ( K_0(\omega) )^{i-1} ( 1-K_0(\omega) )^{n-i} d\omega, 
+$$
+
+Avec :
+
+\begin{itemize}
+\item $K_0$ la loi asymptotique des $H_i$, $i=1...n$ sous l’hypothèse nulle d’indépendance définie par $K_0(\omega) = \omega - \omega \operatorname{log} (\omega), \omega \in (0,1)$;
+\item $k_0$ est la densité des $H_i$, $i=1...n$ sous l’hypothèse d’indépendance, soit $K_0(\omega) = \int_0^\omega k_0(t)dt$.
+\end{itemize}
+
+Nous pouvons dès lors tracer le K-plot sur notre échantillon de données.
 
 \noindent%
 \begin{figure}[H]
@@ -392,7 +418,11 @@ Nous pouvons maintenant tracer le K-plot sur notre échantillon de données.
     \end{center}
 \end{figure}
 
+Si $X$ et $Y$ étaitent indépendants, le Kendall-plot tendrait vers la linéarité.
+Si $X$ et $Y$ étaient antimonotones, le Kendall-plot serait aligné sur l'axe horizontal.
+En revanche, si $X$ et $Y$ étaient comonotones, le Kendall-plot serait aligné sur la courbe d’équation $\omega \longrightarrow K_0(\omega) = \omega - \omega \operatorname{log} (\omega)$.
 
+Ainsi, nous pouvons observer que les variables aléatoires $X$ et $Y$ montrent une nouvelle fois la dépendance positive qui les lie.
 
 \section{Méthode non paramétrique d'estimation : la copule empirique}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
