@@ -326,6 +326,61 @@ où $i \in [1,n-1]$ et $C_n$ estimateur de la copule.
 Ainsi, nous allons définir un estimateur de la copule (estimateur donnant la copule empirique) et effectuerons l'application numérique sur notre échantillon 
 dans la section ci-après.
 
+\subsection{Khi-plot}
+
+Etant donnée une paire $(x_i,y_i)$ avec $i \in \{1,...,n\}$, on pose :
+
+\begin{eqnarray*}
+H_i &=& \frac{1}{n-1} \# \{j \neq i : x_j \leq x_i , y_j \leq y_i \} \\
+F_i &=& \frac{1}{n-1} \# \{j \neq i : x_j \leq x_i \} \\
+G_i &=& \frac{1}{n-1} \# \{j \neq i : y_j \leq y_i \} 
+\end{eqnarray*}
+
+Sous condition d'indépendance, on s'attend à avoir :
+$$
+H_i = F_i G_i, ~~i=1,...,n
+$$
+
+C'est en se basant sur cette propriété que Fisher et Switzer (1985,2001) proposent de tracer les paires de points $(\lambda_i,\chi_i)$ pour $1\leq i \leq n$ où :
+
+$$
+\chi_i = \frac{H_i-F_i G_i}{\sqrt{F_i(1-F_i)G_i(1-G_i)}}
+$$
+et
+$$
+\lambda_i = 4 \operatorname{signe}( \widetilde{F_i} \widetilde{G_i} \operatorname{max}(\widetilde{F_i}^2 \widetilde{G_i}^2  )
+$$
+avec
+$$
+\widetilde{F_i} = F_i - \frac{1}{2}
+$$
+$$
+\widetilde{G_i} = G_i - \frac{1}{2}
+$$
+
+On peut montrer aisément que $\lambda_i \in [-1,1]$ est une mesure de la distance entre le point $(x_i,y_i)$ et le centre du nuage de points.
+
+Notons que, pour éviter les valeurs aberrates, nous ne tracerons que les paires pour lesquelles 
+
+$$
+|\lambda_i| < 4 \left(  \frac{1}{n-1} -\frac{1}{2} \right)^2
+$$
+
+Nous traçons dès lors le Chi-plot sur pour notre échantillon de données.
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=14 cm, angle=0]{./pictures/chi_plot_empir.png}
+      \centering\caption{Chi-plot empirique}
+    \end{center}
+\end{figure}
+
+
+
+\subsection{K-plot}
+
+
 
 \section{Méthode non paramétrique d'estimation : la copule empirique}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

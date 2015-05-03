@@ -159,11 +159,10 @@ Li[i]<-4*sign((Fi[i]-0.5)*(Gi[i]-0.5))*max((Fi[i]-0.5)^2,(Gi[i]-0.5)^2)
 }
 ind=which(abs(Li) < 4*(1/(n-1)-0.5)^2)	
 plot(Li[ind],Xi[ind],main=title,col="blue",xlab=xtitle,ylab=ytitle)
-# abline(h=4*(1/(length(rendFO)-1)-0.5)^2)
-# abline(h=-4*(1/(length(rendFO)-1)-0.5)^2)
-#dev.off()
 }
+#postscript("chi_plot_empir.ps")
 Khiplot(x,y,n,"Li","Xi","Khi-plot empirique")
+#dev.off()
 
 #K-Plot
 
