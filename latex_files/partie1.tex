@@ -752,9 +752,43 @@ On accepte ainsi l'hypothèse nulle et la copule empirique appartient bien à la
 
 Dans cette partie, nous utiliserons la méthode des moments pour estimer le paramètre des copules retenues afin de modéliser la dépendance entre les données sur Saint-Martin et celles sur Echirolles.
 
+La méthode des moments utilise les relations existant entre le tau de Kendall et les paramètres des
+copules. Il est utilisé particulièrement lors de la détermination des paramètres des copules archimédiennes
+et elliptiques en raison du déterminisme de certaines relations.
+
+Pour les copules archimédiennes, le tau de Kendall $\tau$ est déterminé par :
+$$
+\tau = 1 + 4 \int_0^1 \frac{\phi(u)}{\phi'(u)}
+$$
+avec $\phi$ la fonction génératrice de la copule.
+
+Pour la copule de Clayton, nous avons :
+$$
+\tau = 1 + 4 \int_0^1 \frac{\phi(u)}{\phi'(u)} = 1 + 4 \int_0^1 \frac{u^{-1} - 1}{-\theta u^{-\theta -1}} du = 1 + \frac{4}{\theta} \int_0^1 (u^{\theta + 1 -u}) du
+= 1 + \frac{4}{\theta} \left [  \frac{u^{\theta +2}}{\theta +2} - \frac{u^2}{2} \right ]_0^1 = 1 +\frac{4}{\theta} \left [ \frac{1}{\theta + 2} - \frac{1}{2}\right ]
+$$
+
+et ainsi, on obtient : 
+$$
+\tau = \frac{\theta}{\theta + 2}
+$$
+
+En considérant que nous disposons d'une estimation du tau de Kendall, nous pouvons avoir aisément une estimation du paramètre $\theta$ de la copule tel que :
+$$
+\widehat{\theta} = \frac{2 \widehat{\tau}}{1 - \widehat{\tau}}
+$$
+
 \subsection{Copule de Clayton}
 
+On rappelle l'expression trouvée précédemment pour l'estimation du paramètre $\theta$ par la méthode des moments :
+$$
+\widehat{\theta} = \frac{2 \widehat{\tau}}{1 - \widehat{\tau}}
+$$
+
 \subsection{Copule de Gumbel}
+
+%Pour la copule de Gumbel, 
+
 
 \subsection{Copule de Frank}
 
