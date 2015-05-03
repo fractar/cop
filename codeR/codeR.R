@@ -96,15 +96,17 @@ abline(h=0.31)
 #Noyau gaussien
 nn<-100
 zz<-density2d(x=Rx/n,y=Ry/n,n=nn,limits=c(0,1,0,1))
+#postscript("densite_empir_gaussien.ps")
 persp(zz$x,zz$y,z=zz$z, theta = 30, phi = 15, expand = 0.7, 
-	col = "blue", main = "densité noyau gaussien de la copule",
-	xlab="StMartin", ylab="Echirolles", zlab="") 
+	col = "blue", main = "densité empirique de la copule (noyau gaussien)",
+	xlab="St-Martin", ylab="Echirolles", zlab="c(u,v)") 
+#dev.off()
 
 #Noyau gaussien
 zz<-kde2d(x=Rx/n,y=Ry/n)
 persp(zz$x,zz$y,z=zz$z, theta = 30, phi = 15, expand = 0.7, 
-	col = "blue", main = "densité noyau gaussien de la copule",
-	xlab="StMartin", ylab="Echirolles", zlab="") 
+	col = "blue", main = "densité empirique de la copule (noyau gaussien)",
+	xlab="St-Martin", ylab="Echirolles", zlab="c(u,v)") 
 
 # noyau gaussien
 d=2
@@ -126,12 +128,17 @@ u<-(1:100)/100
 v<-u
 fdr<-outer(u,v,density_estim_vect)
 contour(u,v,fdr,col="blue")
-persp(u, v, fdr, theta = 30, phi = 15, expand = 0.7, col = "blue", main = "densité de la copule") 
+persp(u, v, fdr, theta = 30, phi = 15, expand = 0.7, col = "blue", main = "densité empirique de la copule (noyau gaussien)",xlab="St-Martin", ylab="Echirolles", zlab="c(u,v)") 
 
 #Noyau Epanechnikov
 mat<-cbind(Rx/n,Ry/n)
 res<-KDE(mat)
-plot(res,style="perspective")
+#postscript("densite_empir_Epanechnikov.ps")
+par(mfrow=c(1,1))
+plot(res,style="perspective",col="blue", theta = 30, phi = 15, main = "densité empirique de la copule (noyau d'Epanechnikov)",xlab="St-Martin", ylab="Echirolles", zlab="c(u,v)")
+#dev.off()
+
+
 
 #Khi-Plot
 

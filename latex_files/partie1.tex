@@ -378,13 +378,115 @@ Nous allons donc devoir construire d'autres indicateurs plus visuels d'où il se
 informations utiles à la sélection de notre copule théorique.
 
 
-\subsection{Histogramme 3D}
-
 
 \subsection{Dépendance de queue}
 
+Disposant à présent d'un estimateur de la copule, nous pouvons aisément étudier les dépendances de queue à l'aide des estimateurs de Caillault et Guégan 
+présentés dans la section précédente.
 
-\subsection{Densité de la copule empirique}
+Nous obtenons les graphiques suivants :
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=14 cm, angle=0]{./pictures/dependance_queue_empir.png}
+      \centering\caption{Estimation des dépendances de queue à gauche et à droite}
+    \end{center}
+\end{figure}
+
+D'après les définitions vues plus haut pour les quantités $\lambda_L$ et $\lambda_U$, on dit que la copule a une dépendance de queue à gauche
+et à droite si respectivement les asymptotes en 0+ de $\lambda_L$ et en 1- de $\lambda_U$ sont différentes de 0.
+
+Nous obtenons (grossièrement) une asymptote d'équation $y=0,22$ pour $\lambda_L$ et une asymptote d'équation $y=0,31$ pour $\lambda_U$.
+
+Nous remarquons que les valeurs obtenues sont faibles mais ne peuvent pas être considérées comme nulles. Les dépendances de queue à gauche 
+et à droite existent bien.
+
+
+
+
+\subsection{Histogramme 3D}
+----------------------------------------------
+----------------------------------------------
+----------------------------------------------
+TODO TODO
+----------------------------------------------
+----------------------------------------------
+----------------------------------------------
+
+
+\subsection{Fonction de densité empirique}
+
+La fonction de distribution empirique de la copule proposée par Deheuvels présente certains inconvénients.
+En effet, Deheuvels donne un estimateur de la copule empirique sur l'échantillon considéré en utilisant la 
+fonction de répartition.
+
+Comme nous l'avons déjà mentionnée plus haut, elle a pour expression :
+
+\begin{eqnarray*}
+C_n \left( \frac{i}{n},\frac{j}{n}\right) = \frac{1}{n} \sum_{k=1}^n \mathbb{1}_{ \{r_k \leq i\} \cap \{ s_k \leq j\} } 
+\end{eqnarray*}
+sur l'ensemble $\left \{ \left( \frac{i}{n} , \frac{j}{n} \right) , 0 \leq i,j \leq n   \right \}$.
+
+Cette fonction cumulative est fortement discontinue, faisant apparaître une caractéristique par paliers avec des probabilitées cumulées constantes
+entre chaque point et des sauts à chaque observation.
+
+Cela n'est pas très gênant pour une fonction de distribution mais le devient si on déduit la fonction de densité. La fonction de densité de la structure de dépendance 
+empirique peut être directement déduite de sa fonction de distribution :
+
+$$
+c_n \left( \frac{i}{n},\frac{j}{n}\right) = \sum_{k=1}^2 \sum_{l=1}^2 (-1)^{(k+l)} C_n \left( \frac{i-k+1}{n},\frac{j-l+1}{n}\right)
+$$
+
+Le but ici est de proposer un nouvel estimateur de la fonction de densité de la structure de dépendance empirique en inversant la méthode du noyau.
+D'après Silverman (1986), l'estimation non paramétrique par la méthode des noyaux peut s'appliquer à des données multivariées, et en l'occurence bivariées.
+
+En univarié, l'estimateur de la densité s'écrit :
+
+$$
+\widehat{f}(x) = \frac{1}{nh} \sum_{i=1}^n K \left( \frac{x - x_i}{h} \right)
+$$
+où $K$ est la fonction noyau vérifiant $\int_\mathbb{-\infty}^{+\infty} K(x)dx =1$.
+
+Par exemple, le noyau gaussien se définit par :
+$$
+K(u) = \frac{1}{\sqrt{2 \pi}} e^{-\frac{u^2}{2}}
+$$
+
+En dimension 2, l'estimateur de la densité bivariée s'écrit :
+
+$$
+\widehat{f}(x,y) = \frac{1}{nh^2} \sum_{i=1}^n K \left(  \frac{x - x_i}{h} , \frac{y-y_i}{h}    \right)
+$$
+avec la condition que $$ \int_\mathbb{-\infty}^{+\infty}  \int_\mathbb{-\infty}^{+\infty} K(x,y) dx dy = 1$$
+
+En somme, un estimateur à noyau de la densité de copule basé sur l’échantillon $\left(F_n(x_1),G_n(y_1)\right),...,\left(F_n(x_n),G_n(y_n)\right)$ est
+donné par :
+
+$$
+c_n(u,v) = \frac{1}{nh^2} \sum_{i=1}^n K \left(  \frac{u - F_n(x_i)}{h} , \frac{v-G_n(y_i)}{h}    \right)
+$$
+
+
+Avec un noyau gaussien, nous obtenons le graphique suivant pour la fonction de densité empirique :
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=16 cm, angle=0]{./pictures/densite_empir_gaussien.png}
+      \centering\caption{Estimation de la fonction densité par noyau gaussien}
+    \end{center}
+\end{figure}
+
+Avec le noyau d’Epanechnikov, nous obtenons l'estimation de la densité suivante :
+
+\noindent%
+\begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=16 cm, angle=0]{./pictures/densite_empir_Epanechnikov.png}
+      \centering\caption{Estimation de la fonction densité par noyau d'Epanechnikov}
+    \end{center}
+\end{figure}
 
 
 
