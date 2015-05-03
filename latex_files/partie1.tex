@@ -359,9 +359,9 @@ $$
 $$
 
 On peut montrer aisément que $\lambda_i \in [-1,1]$ est une mesure de la distance entre le point $(x_i,y_i)$ et le centre du nuage de points.
+On a aussi que $\chi_i \in [-1,1]$ pour $i \in \{1,...,n\}$.
 
 Notons que, pour éviter les valeurs aberrantes, nous ne tracerons que les paires pour lesquelles 
-
 $$
 |\lambda_i| < 4 \left(  \frac{1}{n-1} -\frac{1}{2} \right)^2
 $$
@@ -376,7 +376,7 @@ Nous traçons dès lors le Khi-plot sur notre échantillon de données.
     \end{center}
 \end{figure}
 
-
+Les valeurs en dehors de l'intervalle $\pm \frac{1.78}{\sqrt{n}}$ (pour $\chi_i$) peuvent être considérées comme non indépendantes. 
 
 \subsection{K-plot ou diagramme de Kendall}
 
@@ -391,7 +391,7 @@ $(Y_1,...,Y_n)$, on peut construire ce diagramme comme suit.
 \begin{enumerate}
 \item pour $i=1,...,n$, on calcule les pseudo-observations $H_i = \frac{1}{n-1} \# \{j \neq i : x_j \leq x_i, y_j \leq y_i \}$
 \item on déduit les statistiques d'ordre associés : $H_{(1)} \leq ... \leq H_{(n)}$
-\item on représente graphiquement les points $(W_{i:n},H_{(i)})$ où $W_{i:n}$ est l'espérance de la i-ème statistique d'odre 
+\item on représente graphiquement les points $(W_{i:n},H_{(i)})$ où $W_{i:n}$ est l'espérance de la i-ème statistique d'ordre 
 d'un échantillon de taille $n$ de la distribution $K_0$ des $H_i$ sous l'hypothèse nulle d'indépendance.
 \end{enumerate}
 
