@@ -808,12 +808,16 @@ $$
 \widehat{\theta} = \frac{2 \widehat{\tau}}{1 - \widehat{\tau}}
 $$
 
+Avec la méthode des moments, on obtient: $\widehat{\theta}^{MM} = 1,049$.
+
 \subsection{Copule de Gumbel}
 
 Pour la copule de Gumbel, nous avons l'estimation :
 $$
 \widehat{\theta} = \frac{1}{1-\widehat{\tau}}
 $$
+
+La valeur obtenue par la méthode des moments est: $\widehat{\theta}^{MM} = 1,524$.
 
 \subsection{Copule de Frank}
 
@@ -822,7 +826,9 @@ $$
 \tau = 1 - 4 \theta^{-1} (1-D_1(\theta))
 $$
 avec $D_1$ la fonction Debye (cf. Abramowitz et Stegun (1970)). Etant difficile à calculer, nous utilisons directement la méthode numérique 
-afin déterminer une estimation du paramètre $\theta$.
+afin de déterminer une estimation du paramètre $\theta$. 
+
+On obtient par la méthode des moments: $\widehat{\theta}^{MM} = 3,193$.
 
 
 \subsection{Copule normale}
@@ -839,6 +845,7 @@ $$
 \widehat{\rho} = \operatorname{sin}\left(\frac{\widehat{\tau} \pi}{2} \right)
 $$
 
+La valeur obtenue par la méthode des moments est: $\widehat{\rho}^{MM} = 0,514$.
 
 \subsection{Copule de Student}
 
@@ -846,6 +853,8 @@ L'estimation du paramètre de corrélation pour la copule de Student a la même 
 $$
 \widehat{\rho} = \operatorname{sin}\left(\frac{\widehat{\tau} \pi}{2} \right)
 $$
+
+On obtient, avec la méthode des moments: $\widehat{\rho}^{MM} = 0,514$. Pour le second paramètre, on obtient, par la méthode du maximum de vraisemblance: $\widehat{\text{df}} = 9,736$.
 
 \section{Méthode paramétriques d'estimation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

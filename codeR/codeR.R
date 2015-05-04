@@ -236,7 +236,7 @@ number = 633
 randomEstime<-rCopula(number,myClaytonCopula)
 XClayton<-randomEstime[,1]
 YClayton<-randomEstime[,2]
-Khiplot(XClayton,YClayton,number)
+Khiplot(XClayton,YClayton,number,"Li","Xi","Khi-plot de la copule de Clayton estimée (méthode CML)")
 
 #K-plot de la copule de Clayton estimé
 KplotXRank<-rank(XClayton,ties.method="random")
