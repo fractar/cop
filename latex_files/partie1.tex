@@ -760,6 +760,8 @@ On accepte ainsi l'hypothèse nulle et la copule empirique appartient bien à la
 
 \subsection{Copule de Student}
 
+Dans le cas de la copule de Student, on a, en sortie de l'algorithme, $\widehat{\theta}_{CML}=0,507$ et $\widehat{\text{df}}=9,98$ comme estimation des paramètres de la copule. L'écart type pour ces estimateurs vaut respectivement $sd_{\theta} = 0,043$ et $sd_{\text{df}} = \text{NA}$. La valeur obtenue pour l'estimation du premier paramètre est donc significative. En revanche, la valeur obtenue pour l'estimation du second paramètre (nombre de degrés de liberté) n'est pas significative. Le maximum de vraisemblance est de $97,77$. 
+
 \section{Méthode des moments}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -878,6 +880,90 @@ des copules :
 
 \section{Test graphique d'adéquation à la copule}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Dans cette partie, nous allons nous intéresser à l'adéquation entre nos copules estimées et la copule empirique issue de nos données. Nous savons maintenant que les marginales peuvent être modélisées par une loi gumbel (Saint Martin) et une loi gamma (Echirolles). Dans un premier temps, nous allons rappeler, pour chaque copule étudiée, nos résultats d'estimation pour les quatre méthodes précédentes. 
+
+\begin{center}
+\begin{tabular}{| l | c | c | c | c | c |}
+ \hline			
+   Méthodes & CML & MM & MV & IFM & Moyenne \\
+  \hline
+   $\widehat{a}$ & - & 5,018 & 5,033 & 5,022 & 5,024 \\
+    $\widehat{b}$ & - & 1,783 & 1,908 & 1,830 & 1,840 \\
+    $\widehat{\text{shape}}$ & - & 5,048 & 4,994 & 4,968 & 5,003 \\
+    $\widehat{\text{scale}}$ & - & 1,305 & 1,325 & 1,326 & 1,319 \\
+    $\widehat{\theta_{cop}}$ & 0,708 & 1,049 & 0,699 & 0,658 & 0,779 \\
+ \hline  
+ \end{tabular}
+\captionof{table}{Estimations des paramètres pour la copule de Clayton}
+\label{tab1}
+\end{center}
+
+\begin{center}
+\begin{tabular}{| l | c | c | c | c | c |}
+ \hline			
+   Méthodes & CML & MM & MV & IFM & Moyenne \\
+  \hline
+   $\widehat{a}$ & - & 5,018 & 5,024 & 5,022 & 5,021 \\
+    $\widehat{b}$ & - & 1,783 & 1,841 & 1,830 & 1,818 \\
+    $\widehat{\text{shape}}$ & - & 5,048 & 5,005 & 4,968 & 5,007 \\
+    $\widehat{\text{scale}}$ & - & 1,305 & 1,326 & 1,326 & 1,319 \\
+    $\widehat{\theta_{cop}}$ & 1,470 & 1,524 & 1,487 & 1,483 & 1,491 \\
+ \hline  
+ \end{tabular}
+\captionof{table}{Estimations des paramètres pour la copule de Gumbel}
+\label{tab2}
+\end{center}
+
+\begin{center}
+\begin{tabular}{| l | c | c | c | c | c |}
+ \hline			
+   Méthodes & CML & MM & MV & IFM & Moyenne \\
+  \hline
+   $\widehat{a}$ & - & 5,018 & 4,997 & 5,022 & 5,012 \\
+    $\widehat{b}$ & - & 1,783 & 1,832 & 1,830 & 1,815 \\
+    $\widehat{\text{shape}}$ & - & 5,048 & 4,789 & 4,968 & 4,935 \\
+    $\widehat{\text{scale}}$ & - & 1,305 & 1,386 & 1,326 & 1,339 \\
+    $\widehat{\theta_{cop}}$ & 3,173 & 3,193 & 3,305 & 3,242 & 3,228 \\
+ \hline  
+ \end{tabular}
+\captionof{table}{Estimations des paramètres pour la copule de Frank}
+\label{tab3}
+\end{center}
+
+\begin{center}
+\begin{tabular}{| l | c | c | c | c | c |}
+ \hline			
+   Méthodes & CML & MM & MV & IFM & Moyenne \\
+  \hline
+   $\widehat{a}$ & - & 5,018 & 5,021 & 5,022 & 5,020 \\
+    $\widehat{b}$ & - & 1,783 & 1,829 & 1,830 & 1,814 \\
+    $\widehat{\text{shape}}$ & - & 5,048 & 4,936 & 4,968 & 4,984 \\
+    $\widehat{\text{scale}}$ & - & 1,305 & 1,337 & 1,326 & 1,323 \\
+    $\widehat{\theta_{cop}}$ & 0,514 & 0,514 & 0,523 & 0,521 & 0,518 \\
+ \hline  
+ \end{tabular}
+\captionof{table}{Estimations des paramètres pour la copule normale}
+\label{tab4}
+\end{center}
+
+\begin{center}
+\begin{tabular}{| l | c | c | c | c | c |}
+ \hline			
+   Méthodes & CML & MM & MV & IFM & Moyenne \\
+  \hline
+   $\widehat{a}$ & - & 5,018 & 5,010 & 5,022 & 5,017 \\
+    $\widehat{b}$ & - & 1,783 & 1,833 & 1,830 & 1,816 \\
+    $\widehat{\text{shape}}$ & - & 5,048 & 4,974 & 4,968 & 4,997 \\
+    $\widehat{\text{scale}}$ & - & 1,305 & 1,328 & 1,326 & 1,320 \\
+    $\widehat{\theta_{cop}}$ & (0,507;9,98) & (0,514;9,74) & (0,517;19,63) & (0,514;16,89) & (0,513;14,06) \\
+ \hline  
+ \end{tabular}
+\captionof{table}{Estimations des paramètres pour la copule de Student}
+\label{tab5}
+\end{center}
+
+Dans la suite de l'étude et pour les tests, nous ne garderons que les moyennes des estimations des paramètres de chaque copule et marginale.
 
 \subsection{Dépendogramme empirique et dépendogramme théorique}
 
