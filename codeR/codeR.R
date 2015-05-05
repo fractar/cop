@@ -13,7 +13,7 @@ library("pspearman")
 library("kSamples")
 library("TeachingDemos")
 library("latticeExtra")
-
+library(fitdistrplus)
 library("tcltk2")
 
 # chargement des données
@@ -245,6 +245,21 @@ thetaN<-coef(CML)
 
 fitClaytonCopula<-claytonCopula(thetaN,dim=2)
 
+##############    3) METHODE MV  #######################
+
+dgumbel  <-  function(x,a,b) 1/b*exp((a-x)/b)*exp(-exp((a-x)/b))
+pgumbel  <-  function(q,a,b) exp(-exp((a-q)/b))
+qgumbel  <-  function(p,a,b) a-b*log(-log(p))
+
+xpar_gumbel <- mledist(x, "gumbel",start=list(a=10,b=5))
+ypar_gamma <- mledist(y, "gamma")
+
+myClaytonMvd<-mvdc(copula=archmCopula(family="clayton",param=0.5),margins=c("gumbel","gamma"),paramMargins=list(list(a=xpar_gumbel$estimate[1],b=xpar_gumbel$estimate[2]),list(shape=ypar_gamma$estimate[1],scale=ypar_gamma$estimate[2])))
+tauKendall<-Kendall(x,y)
+paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
+start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramClayton)
+fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myClaytonMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+
 ################################### Copule de Gumbel #########################
 
 ##############    1) METHODE DES MOMENTS  #######################
@@ -265,6 +280,15 @@ CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myGumbelCopula)
 thetaN<-coef(CML)
 
 fitGumbelCopula<-gumbelCopula(thetaN,dim=2)
+
+##############    3) METHODE MV  #######################
+
+myGumbelMvd<-mvdc(copula=archmCopula(family="gumbel",param=1.5),margins=c("gumbel","gamma"),paramMargins=list(list(a=xpar_gumbel$estimate[1],b=xpar_gumbel$estimate[2]),list(shape=ypar_gamma$estimate[1],scale=ypar_gamma$estimate[2])))
+tauKendall<-Kendall(x,y)
+paramGumbel<-1/(1-tauKendall$tau)
+start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramGumbel)
+fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myGumbelMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+
 
 ################################### Copule de Franck #########################
 
@@ -289,6 +313,16 @@ thetaN<-coef(CML)
 
 fitFrankCopula<-frankCopula(thetaN,dim=2)
 
+##############    3) METHODE MV  #######################
+
+myFrankMvd<-mvdc(copula=archmCopula(family="frank",param=1.5),margins=c("gumbel","gamma"),paramMargins=list(list(a=xpar_gumbel$estimate[1],b=xpar_gumbel$estimate[2]),list(shape=ypar_gamma$estimate[1],scale=ypar_gamma$estimate[2])))
+myFrankCopula<-frankCopula(param=1.5)
+CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myFrankCopula,method="itau")
+thetaN<-coef(CML)
+start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],thetaN)
+fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myFrankMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+
+
 ################################### Copule gaussienne #########################
 
 ##############    1) METHODE DES MOMENTS  #######################
@@ -308,6 +342,14 @@ CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myNormalCopula)
 thetaN<-coef(CML)
 
 fitNormalCopula<-normalCopula(thetaN,dim=2)
+
+##############    3) METHODE MV  #######################
+
+myNormalMvd<-mvdc(copula=ellipCopula(family="normal",param=0.5),margins=c("gumbel","gamma"),paramMargins=list(list(a=xpar_gumbel$estimate[1],b=xpar_gumbel$estimate[2]),list(shape=ypar_gamma$estimate[1],scale=ypar_gamma$estimate[2])))
+tauKendall<-Kendall(x,y)
+paramNormal<-sin(pi*tauKendall$tau/2) 
+start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramNormal)
+fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myNormalMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
 
 
 ################################### Copule de Student #########################
@@ -341,3 +383,14 @@ thetaN<-coef(CML)[1]
 df<-coef(CML)[2]
 
 fitStudentCopula<-tCopula(param=thetaN,dim=2,df=floor(df))
+
+##############    3) METHODE MV  #######################
+
+myStudentMvd<-mvdc(copula=ellipCopula(family="t",param=0.5),margins=c("gumbel","gamma"),paramMargins=list(list(a=xpar_gumbel$estimate[1],b=xpar_gumbel$estimate[2]),list(shape=ypar_gamma$estimate[1],scale=ypar_gamma$estimate[2])))
+tauKendall<-Kendall(x,y)
+paramStudent<-sin(pi*tauKendall$tau/2) 
+myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
+params<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula,method="ml")
+df<-coef(params)[2]
+start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramStudent,df)
+fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myStudentMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
