@@ -258,7 +258,7 @@ myClaytonMvd<-mvdc(copula=archmCopula(family="clayton",param=0.5),margins=c("gum
 tauKendall<-Kendall(x,y)
 paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramClayton)
-fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myClaytonMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+fitTest<-fitMvdc(cbind(x,y),myClaytonMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
 
 ################################### Copule de Gumbel #########################
 
@@ -287,7 +287,7 @@ myGumbelMvd<-mvdc(copula=archmCopula(family="gumbel",param=1.5),margins=c("gumbe
 tauKendall<-Kendall(x,y)
 paramGumbel<-1/(1-tauKendall$tau)
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramGumbel)
-fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myGumbelMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+fitTest<-fitMvdc(cbind(x,y),myGumbelMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
 
 
 ################################### Copule de Franck #########################
@@ -320,7 +320,7 @@ myFrankCopula<-frankCopula(param=1.5)
 CML<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myFrankCopula,method="itau")
 thetaN<-coef(CML)
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],thetaN)
-fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myFrankMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+fitTest<-fitMvdc(cbind(x,y),myFrankMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
 
 
 ################################### Copule gaussienne #########################
@@ -349,7 +349,7 @@ myNormalMvd<-mvdc(copula=ellipCopula(family="normal",param=0.5),margins=c("gumbe
 tauKendall<-Kendall(x,y)
 paramNormal<-sin(pi*tauKendall$tau/2) 
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramNormal)
-fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myNormalMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+fitTest<-fitMvdc(cbind(x,y),myNormalMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
 
 
 ################################### Copule de Student #########################
@@ -393,4 +393,11 @@ myStudentCopula<-tCopula(param=paramStudent,df.fixed=FALSE,dim=2)
 params<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula,method="ml")
 df<-coef(params)[2]
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramStudent,df)
-fitTest<-fitMvdc(cbind(Rx/n,Ry/n),myStudentMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+fitTest<-fitMvdc(cbind(x,y),myStudentMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+
+######## EMV pour les paramètres lois gumbel et gamma #########
+
+EMVgumbelb=sqrt(6)*sd(x)/pi
+EMVgumbela=mean(x)-EMVgumbelb*(-digamma(1))
+EMVgammashape= (mean(y)^2) /(mean(y^2)-mean(y)^2)
+EMVgammascale= (mean(y^2) - mean(y)^2)/mean(y) 
