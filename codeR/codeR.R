@@ -260,6 +260,86 @@ paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramClayton)
 fitTest<-fitMvdc(cbind(x,y),myClaytonMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
 
+########################## TEST GRAPHIQUE ET STATISTIQUE #######################
+
+# Empirique
+Khiplot(x,y,n,"Li","Xi","Khi-plot empirique",ylim=c(-0.2,0.8))
+
+fitClaytonCopula<-claytonCopula(0.779,dim=2)
+testClaytonMvd<-mvdc(copula=fitClaytonCopula,margins=c("gumbel","gamma"),paramMargins=list(list(a=5.024,b=1.840),list(shape=5.003,scale=1.319)))
+randomEstime<-rMvdc(n,testClaytonMvd)
+
+#Khi-plot de la copule de Clayton estimé
+
+XClayton<-randomEstime[,1]
+YClayton<-randomEstime[,2]
+Khiplot(XClayton,YClayton,n,"Li","Xi","Khi-plot de la copule de Clayton estimée",c(-0.2,0.8))
+
+#K-plot de la copule de Clayton estimé
+KplotXRank<-rank(XClayton,ties.method="random")
+KplotYRank<-rank(YClayton,ties.method="random")
+BiCopKPlot(KplotXRank/n,KplotYRank/n,main="K-plot de la copule de Clayton estimée")
+
+#Dépendogramme
+
+plot(KplotXRank/n,KplotYRank/n,xlab="Saint-Martin-en-Haut",ylab="Echirolles",main="Graphique des rangs pour la copule de Clayton estimée")
+
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitClaytonCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
+
+#Bootstrap paramétrique par CML
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=100
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,fitClaytonCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+    tauKendall=Kendall(randomXY[,1],randomXY[,2])
+
+    # Estimation semi parametrique (CML) 
+    paramClayton<-2*tauKendall$tau/(1-tauKendall$tau)
+    myClaytonCopula<-archmCopula(family="clayton",param=paramClayton)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myClaytonCopula,start=paramClayton)
+    thetaN<-coef(CML)
+    fitClaytonCopula<-claytonCopula(thetaN,dim=2)
+    
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitClaytonCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
+
 ################################### Copule de Gumbel #########################
 
 ##############    1) METHODE DES MOMENTS  #######################
@@ -288,6 +368,84 @@ tauKendall<-Kendall(x,y)
 paramGumbel<-1/(1-tauKendall$tau)
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramGumbel)
 fitTest<-fitMvdc(cbind(x,y),myGumbelMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+
+########################## TEST GRAPHIQUE ET STATISTIQUE #######################
+
+fitGumbelCopula<-gumbelCopula(1.491,dim=2)
+testGumbelMvd<-mvdc(copula=fitGumbelCopula,margins=c("gumbel","gamma"),paramMargins=list(list(a=5.021,b=1.818),list(shape=5.007,scale=1.319)))
+randomEstime<-rMvdc(n,testGumbelMvd)
+
+#Khi-plot de la copule de Gumbel estimé
+
+XGumbel<-randomEstime[,1]
+YGumbel<-randomEstime[,2]
+Khiplot(XGumbel,YGumbel,n,"Li","Xi","Khi-plot de la copule de Gumbel estimée",ylim=c(-0.2,0.8))
+
+#K-plot de la copule de Gumbel estimé
+KplotXRank<-rank(XGumbel,ties.method="random")
+KplotYRank<-rank(YGumbel,ties.method="random")
+BiCopKPlot(KplotXRank/n,KplotYRank/n,main="K-plot de la copule de Gumbel estimée")
+
+#Dépendogramme
+
+plot(KplotXRank/n,KplotYRank/n,xlab="Saint-Martin-en-Haut",ylab="Echirolles",main="Graphique des rangs pour la copule de Gumbel estimée")
+
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitGumbelCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
+
+
+#Bootstrap paramétrique par la méthode CML
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=100
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitGumbelCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,fitGumbelCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+
+    # Estimation semi parametrique (CML) 
+    tauKendall<-Kendall(randomXY[,1],randomXY[,2])
+    paramGumbel<-1/(1-tauKendall$tau)
+    myGumbelCopula<-gumbelCopula(param=paramGumbel)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myGumbelCopula,start=paramGumbel)
+    thetaN<-coef(CML)
+    fitGumbelCopula<-gumbelCopula(thetaN,dim=2)
+    
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitGumbelCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
 
 
 ################################### Copule de Franck #########################
@@ -322,6 +480,81 @@ thetaN<-coef(CML)
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],thetaN)
 fitTest<-fitMvdc(cbind(x,y),myFrankMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
 
+########################## TEST GRAPHIQUE ET STATISTIQUE #######################
+
+fitFrankCopula<-frankCopula(3.228,dim=2)
+testFrankMvd<-mvdc(copula=fitFrankCopula,margins=c("gumbel","gamma"),paramMargins=list(list(a=5.012,b=1.815),list(shape=4.935,scale=1.339)))
+randomEstime<-rMvdc(n,testFrankMvd)
+
+#Khi-plot de la copule de Frank estimé
+
+XFrank<-randomEstime[,1]
+YFrank<-randomEstime[,2]
+Khiplot(XFrank,YFrank,n,"Li","Xi","Khi-plot de la copule de Frank estimée",ylim=c(-0.2,0.8))
+
+#K-plot de la copule de Frank estimé
+KplotXRank<-rank(XFrank,ties.method="random")
+KplotYRank<-rank(YFrank,ties.method="random")
+BiCopKPlot(KplotXRank/n,KplotYRank/n,main="K-plot de la copule de Frank estimée")
+
+#Dépendogramme
+
+plot(KplotXRank/n,KplotYRank/n,xlab="Saint-Martin-en-Haut",ylab="Echirolles",main="Graphique des rangs pour la copule de Frank estimée")
+
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitFrankCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
+
+
+#Bootstrap paramétrique par la méthode CML
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=100
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFrankCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,fitFrankCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+
+    # Estimation semi parametrique (CML) 
+    myFrankCopula<-frankCopula(param=1.5)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myFrankCopula)
+    thetaN<-coef(CML)
+    fitFrankCopula<-frankCopula(thetaN,dim=2)
+    
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitFrankCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
 
 ################################### Copule gaussienne #########################
 
@@ -351,6 +584,82 @@ paramNormal<-sin(pi*tauKendall$tau/2)
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramNormal)
 fitTest<-fitMvdc(cbind(x,y),myNormalMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
 
+########################## TEST GRAPHIQUE ET STATISTIQUE #######################
+
+fitNormalCopula<-normalCopula(0.518,dim=2)
+testNormalMvd<-mvdc(copula=fitNormalCopula,margins=c("gumbel","gamma"),paramMargins=list(list(a=5.020,b=1.814),list(shape=4.984,scale=1.323)))
+randomEstime<-rMvdc(n,testNormalMvd)
+
+#Khi-plot de la copule gaussienne estimé
+
+XNormal<-randomEstime[,1]
+YNormal<-randomEstime[,2]
+Khiplot(XNormal,YNormal,n,"Li","Xi","Khi-plot de la copule normale estimée",ylim=c(-0.2,0.8))
+
+#K-plot de la copule gaussienne estimé
+KplotXRank<-rank(XNormal,ties.method="random")
+KplotYRank<-rank(YNormal,ties.method="random")
+BiCopKPlot(KplotXRank/n,KplotYRank/n,main="K-plot de la copule normale estimée")
+
+#Dépendogramme
+
+plot(KplotXRank/n,KplotYRank/n,xlab="Saint-Martin-en-Haut",ylab="Echirolles",main="Graphique des rangs pour la copule normale estimée")
+
+#### METHODE 1: FONCTION D'UN PACKAGE DE R ####
+
+gofCopula(fitNormalCopula,cbind(Rx/(n+1),Ry/(n+1)))
+
+#### METHODE 2: CODE MAISON ####
+
+#Bootstrap paramétrique par la méthode CML
+
+Ui = Rx/(n+1)
+Vi = Ry/(n+1)
+
+# copule empirique  bivariée Nelsen, 2006
+uv <- data.frame(Ui,Vi)
+u<-(1:100)/100
+v<-u
+
+fdrEmpirique<-function(u,v){
+  return(EMPIRcop(u,v,para=uv))
+}
+
+UV<-cbind(Ui,Vi)
+N=100
+randomX = NULL
+Dn = sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitNormalCopula))^2)
+Dnk = NULL
+for (k in 1:N) {
+    print(k)
+    randomXY <-rCopula(n,fitNormalCopula)
+    rankX<-rank(randomXY[,1],ties.method="random")
+    rankY<-rank(randomXY[,2],ties.method="random")
+    Ui = rankX/(n+1)
+    Vi = rankY/(n+1)
+    uv <- data.frame(Ui,Vi)    
+    fdrEmpirique<-function(u,v){
+	return(EMPIRcop(u,v,para=uv))
+    }
+
+    # Estimation semi parametrique (CML) 
+    tauKendall<-Kendall(randomXY[,1],randomXY[,2])
+    paramNormal<-sin(pi*tauKendall$tau/2) 
+    myNormalCopula<-ellipCopula(family="normal",param=paramNormal)
+    CML<-fitCopula(data=cbind(Ui,Vi),copula=myNormalCopula,start=paramNormal)
+    thetaN<-coef(CML)
+    fitNormalCopula<-normalCopula(thetaN,dim=2)
+    
+    UV<-cbind(Ui,Vi)
+    Dnk = c(Dnk,sum((fdrEmpirique(Ui,Vi) - pCopula(UV, fitNormalCopula))^2))
+}
+
+alpha = 0.05
+L = sort(Dnk)[floor((1-alpha)*N)]
+#Règle de décision
+Dn > L
+#p-value
+sum(Dnk > Dn)/length(Dnk)
 
 ################################### Copule de Student #########################
 
@@ -394,6 +703,27 @@ params<-fitCopula(data=cbind(Rx/(n+1),Ry/(n+1)),copula=myStudentCopula,method="m
 df<-coef(params)[2]
 start<-c(xpar_gumbel$estimate[1],xpar_gumbel$estimate[2],ypar_gamma$estimate[1],ypar_gamma$estimate[2],paramStudent,df)
 fitTest<-fitMvdc(cbind(x,y),myStudentMvd,start=start,optim.control=list(trace=TRUE,maxit=2000))
+
+########################## TEST GRAPHIQUE ET STATISTIQUE #######################
+
+fitStudentCopula<-tCopula(0.513,dim=2)
+testStudentMvd<-mvdc(copula=fitStudentCopula,margins=c("gumbel","gamma"),paramMargins=list(list(a=5.017,b=1.816),list(shape=4.997,scale=1.320)))
+randomEstime<-rMvdc(n,testStudentMvd)
+
+#Khi-plot de la copule de Student estimé
+
+XStudent<-randomEstime[,1]
+YStudent<-randomEstime[,2]
+Khiplot(XStudent,YStudent,n,"Li","Xi","Khi-plot de la copule de Student estimée",ylim=c(-0.2,0.6))
+
+#K-plot de la copule de Student estimé
+KplotXRank<-rank(XStudent,ties.method="random")
+KplotYRank<-rank(YStudent,ties.method="random")
+BiCopKPlot(KplotXRank/n,KplotYRank/n,main="K-plot de la copule de Student estimée")
+
+#Dépendogramme
+
+plot(KplotXRank/n,KplotYRank/n,xlab="Saint-Martin-en-Haut",ylab="Echirolles",main="Graphique des rangs pour la copule de Student estimée")
 
 ######## EMV pour les paramètres lois gumbel et gamma #########
 
