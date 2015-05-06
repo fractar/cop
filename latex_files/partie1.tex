@@ -952,9 +952,13 @@ Pour cette étude sur les K-plots, celui concernant la copule de Gumbel estimée
 \section{Test statistique d'adéquation à la copule}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Test de Kolmogorov-Smirnov}
-
 \subsection{La statistique de Cramér-von Mises}
+
+Le test de Cramér-von Mises est un test permettant de comparer des distributions. Ce test consiste à calculer la somme des carrés des écarts en valeur absolue entre les fonctions de répartition. Notons $S_F^2$ cette somme, la statistique est alors définie comme suit:
+$$T = \frac{nmS_F^2}{n + m} $$
+avec n et m le nombre d'observation des deux groupes. \\
+Pour un test bilatéral, on rejette $H_0$ au niveau de signification $5\%$ (resp. $1\%$) si $T$ est supérieure à $0.461$ (resp. $0.743$).\\
+Ce test est souvent plus puissant que le test de Kolmogorov-Smirnov et est également plus facile à utiliser du fait de la bonne approximation qui évite le recours à des tables.
 
 \subsection{Estimation du seuil critique par bootstrap paramétrique}
 
