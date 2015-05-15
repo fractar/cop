@@ -251,8 +251,58 @@ dgumbel  <-  function(x,a,b) 1/b*exp((a-x)/b)*exp(-exp((a-x)/b))
 pgumbel  <-  function(q,a,b) exp(-exp((a-q)/b))
 qgumbel  <-  function(p,a,b) a-b*log(-log(p))
 
-xpar_gumbel <- mledist(x, "gumbel",start=list(a=10,b=5))
+#Choix des lois marginales
+xpar_gamma <- mledist(x, "gamma")
 ypar_gamma <- mledist(y, "gamma")
+xpar_exp <- mledist(x, "exp")
+ypar_exp <- mledist(y, "exp")
+xpar_norm <- mledist(x, "norm")
+ypar_norm <- mledist(y, "norm")
+xpar_weibull <- mledist(x, "weibull")
+ypar_weibull <- mledist(y, "weibull")
+xpar_gumbel <- mledist(x, "gumbel",start=list(a=10,b=5))
+ypar_gumbel <- mledist(y, "gumbel",start=list(a=10,b=5))
+
+#Function to determine the parameters of the distribution
+distr.choose <- function(x,xpar_distr,pdistr,leg="Distribution",wind)
+{
+  x <-sort(x)
+  x.emp <- ecdf(x)
+  plot(x.emp, col="grey", main=wind)
+  nb_param = length(xpar_distr$estimate)
+  if (nb_param == 1)
+  {
+    param1 <- xpar_distr$estimate[1] 
+    lines(x,pdistr(x, param1), col="blue4")
+  } else if (nb_param == 2)
+  {
+    param1 <- xpar_distr$estimate[1] 
+    param2 <- xpar_distr$estimate[2]
+    lines(x,pdistr(x, param1, param2), col="blue4")
+  }
+  legend("topleft",legend=c("Empirical distr",leg), col=c("grey","blue4"),lty=c(1,1)) 
+}
+
+#Gamma distribution
+distr.choose(x,xpar_gamma,pgamma,"Gamma distr","St Martin Wind Distribution")
+distr.choose(y,ypar_gamma,pgamma,"Gamma distr","Echirolles Wind Distribution")
+#Normal distribution
+distr.choose(x,xpar_norm,pnorm,"Normal distr","St Martin Wind Distribution")
+distr.choose(y,ypar_norm,pnorm,"Normal distr","Echirolles Wind Distribution")
+#Exponential distribution
+distr.choose(x,xpar_exp,pexp,"Exp distr","St Martin Wind Distribution")
+distr.choose(y,ypar_exp,pexp,"Exp distr","Echirolles Wind Distribution")
+#Weibull distribution
+distr.choose(x,xpar_weibull,pweibull,"Weibull distr","St Martin Wind Distribution")
+distr.choose(y,ypar_weibull,pweibull,"Weibull distr","Echirolles Wind Distribution")
+#Gumbel distribution
+distr.choose(x,xpar_gumbel,pgumbel,"Gumbel distr","St Martin Wind Distribution")
+distr.choose(y,ypar_gumbel,pgumbel,"Gumbel distr","Echirolles Wind Distribution")
+
+nx <- length(unique(x))
+ny <- length(unique(y))
+qqplot(sort(unique(x)),qnorm(seq(1:nn)/nn,xpar_norm$estimate[1],xpar_norm$estimate[2]), type="l",main="QQ-PLOT")
+qqplot(sort(unique(y)),qnorm(seq(1:nn)/nn,ypar_norm$estimate[1],ypar_norm$estimate[2]), type="l")
 
 myClaytonMvd<-mvdc(copula=archmCopula(family="clayton",param=0.5),margins=c("gumbel","gamma"),paramMargins=list(list(a=xpar_gumbel$estimate[1],b=xpar_gumbel$estimate[2]),list(shape=ypar_gamma$estimate[1],scale=ypar_gamma$estimate[2])))
 tauKendall<-Kendall(x,y)
@@ -731,3 +781,92 @@ EMVgumbelb=sqrt(6)*sd(x)/pi
 EMVgumbela=mean(x)-EMVgumbelb*(-digamma(1))
 EMVgammashape= (mean(y)^2) /(mean(y^2)-mean(y)^2)
 EMVgammascale= (mean(y^2) - mean(y)^2)/mean(y) 
+
+##############    4) METHODE IFM  #######################
+
+myMvd <- mvdc(copula = ellipCopula(family = "normal",param = 0.5),margins = c("gamma", "gamma"), 
+              paramMargins = list(list(shape = xpar_gamma[1],scale =xpar_gamma[2] ), list(shape = ypar_gamma[1], scale = ypar_gamma[2])))
+#n <- 200
+#dat <- rMvdc(myMvd, n)
+a.0 <- sin(cor(x, y, method = "kendall") * pi/2)
+#Data with the gamma function for margin
+udat <- cbind(pgamma(x,xpar_gamma$estimate[1],xpar_gamma$estimate[2]),pgamma(y,ypar_gamma$estimate[1],ypar_gamma$estimate[2]))
+
+gumbel.cop <- gumbelCopula(5, dim=2)
+clayton.cop <- claytonCopula(3,dim=2)
+frank.cop <- frankCopula(3,dim=2)
+normal.cop <- normalCopula(param=0.5,dim=2)
+fit.ml.gumbel <- fitCopula(gumbel.cop, udat, method="ml")
+fit.ml.clayton <- fitCopula(clayton.cop, udat, method="ml")
+fit.ml.frank <- fitCopula(frank.cop, udat, method="ml")
+fit.ml.normal <- fitCopula(normal.cop, udat, method="ml")
+
+#Conclusion: 1) Normal, 2)Gumbel 3)Franck 4)Clayton
+
+#Data with the normal distribution for margin
+udat <- cbind(pnorm(x,xpar_norm$estimate[1],xpar_norm$estimate[2]),pnorm(y,ypar_norm$estimate[1],ypar_norm$estimate[2]))
+
+gumbel.cop <- gumbelCopula(5, dim=2)
+clayton.cop <- claytonCopula(3,dim=2)
+frank.cop <- frankCopula(3,dim=2)
+normal.cop <- normalCopula(0.5,dim=2)
+fit.ml.gumbel <- fitCopula(gumbel.cop, udat, method="ml")
+fit.ml.clayton <- fitCopula(clayton.cop, udat, method="ml")
+fit.ml.frank <- fitCopula(frank.cop, udat, method="ml")
+fit.ml.normal <- fitCopula(normal.cop, udat, method="ml")
+
+#Conclusion: 1) Normal (101.76) , 2)Clayton (95.5) 3) Gumbel (80.5) 4)Franck (78.8)
+
+#Data with the gumbel distribution for margin
+udat <- cbind(pgumbel(x,xpar_gumbel$estimate[1],xpar_gumbel$estimate[2]),pgumbel(y,ypar_gumbel$estimate[1],ypar_gumbel$estimate[2]))
+
+
+gumbel.cop <- gumbelCopula(5, dim=2)
+clayton.cop <- claytonCopula(3,dim=2)
+frank.cop <- frankCopula(3,dim=2)
+normal.cop <- normalCopula(0.5,dim=2)
+fit.ml.gumbel <- fitCopula(gumbel.cop, udat, method="ml")
+fit.ml.clayton <- fitCopula(clayton.cop, udat, method="ml")
+fit.ml.frank <- fitCopula(frank.cop, udat, method="ml")
+fit.ml.normal <- fitCopula(normal.cop, udat, method="ml")
+
+#Conclusion: 1) Normal ( 97.00561) , 2)umbel (94.24512)  3)Franck (77.87459) G4)Clayton (70.17998)
+
+#Data with the weibull distribution for margin
+udat <- cbind(pweibull(x,xpar_weibull$estimate[1],xpar_weibull$estimate[2]),pweibull(y,ypar_weibull$estimate[1],ypar_weibull$estimate[2]))
+
+gumbel.cop <- gumbelCopula(5, dim=2)
+clayton.cop <- claytonCopula(3,dim=2)
+frank.cop <- frankCopula(3,dim=2)
+normal.cop <- normalCopula(0.5,dim=2)
+fit.ml.gumbel <- fitCopula(gumbel.cop, udat, method="ml")
+fit.ml.clayton <- fitCopula(clayton.cop, udat, method="ml")
+fit.ml.frank <- fitCopula(frank.cop, udat, method="ml")
+fit.ml.normal <- fitCopula(normal.cop, udat, method="ml")
+
+#Conclusion: 1) Normal (102.5) ,2)Clayton (89.6025)  3)Gumbel (82.23003)  4)Franck (80.8784) 
+
+xpar_gumbel <- mledist(x, "gumbel",start=list(a=10,b=5))
+ypar_gamma <- mledist(y, "gamma")
+
+udat <- cbind(pgumbel(x,xpar_gumbel$estimate[1],xpar_gumbel$estimate[2]),pgamma(y,ypar_gamma$estimate[1],ypar_gamma$estimate[2]))
+
+gumbel.cop <- gumbelCopula(5, dim=2)
+clayton.cop <- claytonCopula(3,dim=2)
+frank.cop <- frankCopula(3,dim=2)
+normal.cop <- normalCopula(0.5,dim=2)
+student.cop<- tCopula(0.5,dim=2)
+fit.ml.gumbel <- fitCopula(gumbel.cop, udat, method="ml")
+fit.ml.clayton <- fitCopula(clayton.cop, udat, method="ml")
+fit.ml.frank <- fitCopula(frank.cop, udat, method="ml")
+fit.ml.normal <- fitCopula(normal.cop, udat, method="ml")
+fit.ml.student <- fitCopula(student.cop, udat, method="ml")
+
+xpar_gumbel
+ypar_gamma
+
+summary(fit.ml.gumbel)
+summary(fit.ml.clayton)
+summary(fit.ml.franck)
+summary(fit.ml.normal)
+summary(fit.ml.student)
