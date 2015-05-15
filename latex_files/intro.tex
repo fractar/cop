@@ -1,5 +1,28 @@
 \section*{Introduction} % Pas de numérotation
 \addcontentsline{toc}{section}{Introduction} % Ajout dans la table des matières
 
+La théorie des copules a connu ces trois dernières décennies un essor considérable.
+Ce développement a notamment vu ses applications de plus en plus nombreuses dans le domaine de la finance.
+La gestion des risques, l'évaluation des rendements d'actifs, la théorie des valeurs extrêmes, requièrent des modélisations de
+la dépendance et la théorie des copules permet à la finance d'accomoder la non-normalité des variables.
 
-TODO   TODO   TODO   TODO
+Avec une grande souplesse dans la mise en oeuvre de l'analyse multivariée, les copules autorisent une  sélection plus étendue des distributions conjointes des séries de données.
+Les fonctions copules permettent une représentation moins naïve de la dépendance statistique fondée sur la mesure traditionnelle de corrélation qui présente des limites dans l'étude de l'interdépendance entre deux variables (cf. Embrechts et al. (1999)). 
+En outre, elles autorisent des distributions de probabilités jointes moins restrictives, prenant  mieux en compte certaines caractéristiques comme l'asymétrie ou la dépendance de queue.
+En somme, elles permettent de construire des distributions multidimensionnelles assez générales indépendamment des lois des marginales.
+
+Dans ce projet, nous utiliserons cet outil puissant afin de modéliser au mieux la dépendance existant entre deux séries de données relatives 
+à la vitesse maximale du vent relevées dans deux stations différentes mais proches géographiquement.
+
+Dans une première partie, nous chercherons à décrire les données en présence et la dépendance sous-jacente au moyen de graphiques et de mesures de dépendance.
+Puis, dans une seconde partie nous présenterons la copule empirique calculée sur nos données et qui nous servira de référentiel lors des tests à venir. Après un rappel théorique en début de chaque section, les parties qui suivront mettront en application différentes méthodes d'estimation sur des copules archimédiennes et des copules elliptiques :
+
+\begin{itemize}
+\item la méthode semi-paramétrique CML (Canonical Maximum Likelihood),
+\item la méthode des moments,
+\item les méthodes paramétriques, telles que la méthode du maximum de vraisemblance et la méthode IFM (Inference Function for Margins).
+\end{itemize} 
+
+Ensuite, nous réaliserons différents tests graphiques d'adéquation aux copules étudiées et des tests statistiques afin de retenir ou non l'adéquation des modèles de copule à nos données. 
+
+L'ensemble des algorithmes et applications numériques ont été réalisés dans le langage de programmation $R$, dont le code est fourni avec le présent mémoire.
