@@ -4,17 +4,17 @@
 \subsection{Présentation}
 
 Nous disposons de deux séries de données contenues dans le package \lstinline!gumbel! correspondant à la vitesse maximale du vent par jour, sur la période août 2005 - avril 2007,
-relevée à deux stations différentes en région Rhône-Alpes : l'une à Saint-Martin-en-Haut (département du Rhône) et et une autre à Echirolles (département de l'Isère).
+relevée à deux stations différentes en région Rhône-Alpes : l'une à Saint-Martin-en-Haut (département du Rhône) et une autre à Echirolles (département de l'Isère).
 
 ~\\~
 Notons :
 \begin{itemize}
-\item $(X_t)_t$ la série relative à la force maximale du vent (en m/s) par jour relevée par la station à Saint-Martin-en-Haut 
+\item $(X_t)_t$ la série relative à la force maximale du vent (en m/s) par jour relevée par la station à Saint-Martin-en-Haut, 
 \item $(Y_t)_t$ la série relative à la force maximale du vent (en m/s) par jour relevée par la station à Echirolles.
 \end{itemize}
 
 ~\\~
-Puisque les jeux de données appelés dans $R$ \lstinline!windEchirolles! et \lstinline!windStMartin! possèdent 
+Puisque les jeux de données, appelés dans $R$ \lstinline!windEchirolles! et \lstinline!windStMartin!, possèdent 
 un nombre d’enregistrements différents en 2007, nous sélectionnons le plus petit sous-ensemble. Les données manquantes sont aussi retirées de la série.
 
 Nous avons ainsi deux vecteurs de données contenant chacun $n=633$ données (correspondant à 633 jours).
@@ -23,10 +23,10 @@ Nous avons ainsi deux vecteurs de données contenant chacun $n=633$ données (co
 \subsection{Formalisation}
 
 Nous allons donc nous intéresser à la relation existant entre ces deux variables aléatoires réelles au moyen de modélisations par copules.
-En effet,  les fonctions copules permettent de déterminer la nature de dépendance des séries qu’elle soit linéaire ou pas, monotone ou pas.
+En effet,  les fonctions copules permettent de déterminer la nature de dépendance des séries qu’elle soit linéaire ou non, monotone ou non.
 
 D'une manière explicite, les copules sont des fonctions de répartition particulières,
-qui lient les fonctions de répartition multivariéees de lois de probabilitée dans $\mathbb{R}^d$, où $d \geq 2$ (ici $d$ sera égal à 2 car nous aurons un modèle bivarié) aux fonctions de répartition marginales de leurs coordonnées. 
+qui lient les fonctions de répartition multivariées de lois de probabilité dans $\mathbb{R}^d$, où $d \geq 2$ (ici $d$ sera égal à 2 car nous aurons un modèle bivarié) aux fonctions de répartition marginales de leurs coordonnées. 
 La caractéristique des copules permet de séparer les distributions marginales de la structure de dépendance.
 
 Plus précisément, $X$ et $Y$  sont définies sur un espace de probabilité $(\Omega,\mathcal{A},\mathbb{P})$, de fonction de répartition conjointe $H$ et de marginales $F$ et $G$.
@@ -65,7 +65,7 @@ F_n(x) = \frac{1}{n} \sum_{i=1}^n \mathbb{1}_{x_i \leq x}
 G_n(x) = \frac{1}{n} \sum_{i=1}^n \mathbb{1}_{y_i \leq y}
 $$
 
-pour un n-échantillon de la loi $F$ et n-échantillon de la loi $G$.
+pour un $n$-échantillon de la loi $F$ et $n$-échantillon de la loi $G$.
 
 Ainsi, nous noterons respectivement $F_n$ et $G_n$ les fonctions de répartion empiriques des marginales $F$ et $G$.
 
@@ -182,7 +182,7 @@ Pour nos deux échantillons de données, on obtient la valeur suivante pour le c
 \fbox{$\rho(X,Y) = 0,524 $}
 \end{center}
 
-Cette valeur positive laisse à penser, conformément au dépendogramme, que les relevés de la station d'Echirolles et ceux de la station de Saint-Martin-en-Haut ont une dépendance positive. Mais ce resultat reste relativement peu fiable pour les raisons citées, principalement par le fait que les variables d'intérêt présentent une dépendance non linéaire.
+Cette valeur positive laisse à penser, conformément au dépendogramme, que les relevés de la station d'Echirolles et ceux de la station de Saint-Martin-en-Haut ont une dépendance positive. Mais ce résultat reste relativement peu fiable pour les raisons citées, principalement par le fait que les variables d'intérêt présentent une dépendance non linéaire.
 
 
 Pour remédier à cela, nous avons recours à d’autres indicateurs de dépendance se basant sur les rangs et les concordances observés de notre échantillon de données. 
@@ -199,7 +199,7 @@ $$
 \rho_s = \rho(R,S) = \frac{\operatorname{Cov}(R,S)}{\sqrt{ \operatorname{Var}(R) \operatorname{Var}(S)}} = \frac{ \sum_{i=1}^n (R_i - \bar{R}) \times (S_i - \bar{S})  }{ \sqrt{   \sum_{i=1}^n (R_i - \bar{R})^2 \times  \sum_{i=1}^n (S_i - \bar{S})^2    }    }
 $$
 
-De plus, $rho_s$ vérifie les propriétés suivantes :
+De plus, $\rho_s$ vérifie les propriétés suivantes :
 
 \begin{enumerate}
 
@@ -283,10 +283,9 @@ aléatoires réelles $X$ et $Y$.
 
 En effet, elle mesure la probabilité de réalisations extrêmes simultanées. En vulgarisant, nous parlerons alors
 de dépendance de queue à gauche et de dépendance de queue à droite pour désigner respectivement la
-probabilité d'être dans la queue de distribution gauche de la loi marginale $F$ sachant que nous nous trou-
-vons dans la distribution gauche de la loi marginale $G$ et la probabilité d'être dans la queue de distribution
+probabilité d'être dans la queue de distribution gauche de la loi marginale $F$ sachant que nous nous trouvons dans la distribution gauche de la loi marginale $G$ et la probabilité d'être dans la queue de distribution
 droite de la loi marginale $F$ sachant que nous nous trouvons dans la distribution droite de la loi marginale
-$F$. Si cette dépendance est égale à 0, alors les extrêmes sont indépendants. Si elle est égale à 1, alors les
+$G$. Si cette dépendance est égale à 0, alors les extrêmes sont indépendants. Si elle est égale à 1, alors les
 extrêmes sont parfaitement corrélés. 
 
 La dépendance de queue est par conséquent une mesure de corrélation des extrêmes.
@@ -381,7 +380,7 @@ la dépendance existant entre nos deux variables aléatoires réelles $X$ et $Y$
 
 \subsection{K-plot ou diagramme de Kendall}
 
-Le diagramme de Kendall est un aussi outil intéressant lorsque que l'on veut étudier la dépendance entre les variables d'intérêts.
+Le diagramme de Kendall est aussi un outil intéressant lorsque que l'on veut étudier la dépendance entre les variables d'intérêts.
 
 Le K-plot introduit par Genest et Boies (2003) est l'équivalent pour les copules du Q-Q Plot pour les
 densités univariées.
@@ -419,7 +418,7 @@ Nous pouvons dès lors tracer le K-plot sur notre échantillon de données.
     \end{center}
 \end{figure}
 
-Si $X$ et $Y$ étaitent indépendants, le Kendall-plot tendrait vers la linéarité.
+Si $X$ et $Y$ étaient indépendants, le Kendall-plot tendrait vers la linéarité.
 Si $X$ et $Y$ étaient antimonotones, le Kendall-plot serait aligné sur l'axe horizontal.
 En revanche, si $X$ et $Y$ étaient comonotones, le Kendall-plot serait aligné sur la courbe d’équation $\omega \longrightarrow K_0(\omega) = \omega - \omega \operatorname{log} (\omega)$.
 
@@ -457,7 +456,7 @@ $$
 La copule empirique n’est autre que la fonction de répartition bivariée associée au nuage de point $\left( \frac{r_i}{n},\frac{s_i}{n} \right )_{1 \leq i \leq n}$.
 
 Cet estimateur possède l'avantage de ne pas dépendre des distributions marginales. De plus, la copule
-empirique d'ordre n $C_n$ converge asymptotiquement vers la copule $C$ d'après Faivre (2002).
+empirique d'ordre $n$, $C_n$, converge asymptotiquement vers la copule $C$ d'après Faivre (2002).
 
 Une fois la copule empirique calculée, nous pouvons tout d'abord tracer un graphique 3D afin d'avoir une
 idée de la forme de notre copule :
@@ -513,7 +512,7 @@ Pour poursuivre notre étude, nous pouvons représenter un histogramme en trois 
     \end{center}
 \end{figure}
 
-On peut ainsi remarquer une fois de plus la dépendance positive de la copule, mais également les dépendances de queue à gauche et droite, qui semblent apparaître nettement sur ce graphe.
+On peut ainsi remarquer une fois de plus la dépendance positive de la copule, mais également les dépendances de queue à gauche et droite, qui semblent apparaître nettement sur ce graphique.
 
 \subsection{Fonction de densité empirique}
 
@@ -640,7 +639,7 @@ L'estimation du paramètre de la copule de Frank par méthode CML est $\widehat{
 
 \subsection{Copule normale}
 
-Par la méthode CML, on obtient l'estimation suivante du paramètre de la copule normale: $\widehat{\theta}_{CML}=0,51412$. L'écrat type associé vaut $sd = 0,031$, ce qui prouve la significativité de l'estimation obtenue. On obtient $94,83$ comme maximum de vraisemblance. 
+Par la méthode CML, on obtient l'estimation suivante du paramètre de la copule normale: $\widehat{\theta}_{CML}=0,51412$. L'écart type associé vaut $sd = 0,031$, ce qui prouve la significativité de l'estimation obtenue. On obtient $94,83$ comme maximum de vraisemblance. 
 
 \subsection{Copule de Student}
 
@@ -773,8 +772,8 @@ Ces méthodes nécessitent au préalable d'identifier la distribution de X et ce
     \end{center}
 \end{figure}
 
-En observant les densités empiriques, on s'aperçoit que la force maximale du vent n'a pas la même distribution à Saint Martin en Haut et à Echirolles alors que ces deux villes sont proches géographiquement.
-La distribution de la force maximale du vent à Saint Martin en Haut est asymétrique avec une majorité des valeurs supérieurs à 5. Ce n'est pas exactement l'allure d'une loi normale. La distribution de la force maximale du vent à Echirolles est moins régulière et admet deux minimums locaux.
+En observant les densités empiriques, on s'aperçoit que la force maximale du vent n'a pas la même distribution à Saint-Martin-en-Haut et à Echirolles alors que ces deux villes sont proches géographiquement.
+La distribution de la force maximale du vent à Saint-Martin-en-Haut est asymétrique avec une majorité des valeurs supérieures à 5. Ce n'est pas exactement l'allure d'une loi normale. La distribution de la force maximale du vent à Echirolles est moins régulière et admet deux minimums locaux.
 \\ \\
 La vitesse du vent en un site donné est communément considérée comme une variable aléatoire suivant une loi de Weibull à 2 paramètres. Néanmoins, il s'agit ici de la force maximale du vent. Elle ne suit pas forcément une loi de Weibull. 
 Pour chacun des deux lieux, nous avons choisi de tester les lois gamma, exponentielle, normale, Weibull et Gumbel.
@@ -797,7 +796,7 @@ Pour chacun des deux lieux, nous avons choisi de tester les lois gamma, exponent
 
 En traçant les fonctions de répartitions empiriques et calibrées pour chaque marginale, on constate que la loi exponentielle n'est pas du tout adaptée. Il est difficile de déterminer graphiquement laquelle des lois restantes est la plus proche de la distribution empirique. Il est nécessaire de comparer les log-vraisemblances.
 \\ \\
-Pour chacune des deux villes, on retiendra la loi la plus vraisemblable. Pour chacune des lois, la fonction mledist permet de calculer la log-vraisemblance de l'ajustement. Les valeurs obtenues sont présentées dans le tableau ci-dessous. 
+Pour chacune des deux villes, on retiendra la loi la plus vraisemblable. Pour chacune des lois, la fonction \lstinline!mledist! de $R$ permet de calculer la log-vraisemblance de l'ajustement. Les valeurs obtenues sont présentées dans le tableau ci-dessous. 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline 
@@ -805,19 +804,19 @@ Lieu/Loi & Exponentielle & Gamma & Normale & Weibull & Gumbel \\
 \hline
 Echirolles & -1827 & -1540 & -1579 & -1551 & -1547 \\
 \hline
-Saint Martin en Haut & -1772  & -1375 & -1422 & -1412 & -1371 \\
+Saint-Martin-en-Haut & -1772  & -1375 & -1422 & -1412 & -1371 \\
 \hline
 \end{tabular}
 \end{center}
 
 \vspace{0.4cm}
-C'est la loi gamma qui modélise la mieux la force maximale du vent à Echirolles (log-vraisemblance égale à -1540). Par contre, la force maximale du vent à Saint Martin en Haut est mieux modélisée par une loi de Gumbel(log-vraisemblance égale à -1371). On a déterminé la loi de chaque marginale.
+C'est la loi gamma qui modélise la mieux la force maximale du vent à Echirolles (log-vraisemblance égale à -1540). Par contre, la force maximale du vent à Saint-Martin-en-Haut est mieux modélisée par une loi de Gumbel (log-vraisemblance égale à -1371). On a déterminé la loi de chaque marginale.
 
 \subsection{Méthode du maximum de vraisemblance}
 
 \subsubsection{Rappel sur la méthode}
 
-Supposons que l'échantillon $(x_1,y_1),...,(x_n,y_n)$ ait été généré à partir d'une distribution H. On note $F(x,\beta_1)$ et $G(y,\beta_2)$ les fonctions de distribution marginales. On suppose aussi que la fonction de copule C appartient à une famille paramétrique de paramètre $\alpha$. Le vecteur de paramètres à estimer est $\theta = (\beta_1,\beta_2,\alpha)'$. 
+Supposons que l'échantillon $(x_1,y_1),...,(x_n,y_n)$ ait été généré à partir d'une distribution H. On note $F(x,\beta_1)$ et $G(y,\beta_2)$ les fonctions de distribution marginales. On suppose aussi que la fonction de copule $C$ appartient à une famille paramétrique de paramètre $\alpha$. Le vecteur de paramètres à estimer est $\theta = (\beta_1,\beta_2,\alpha)'$. 
 \\ \\
 La distribution conjointe s'écrit :
 
@@ -842,7 +841,7 @@ l(\theta) = \sum_{i=1}^n log(c(F(x_i;\beta_1),G(y_i;\beta_2);\alpha)) + \sum_{i=
 En maximisant la fonction de vraisemblance par rapport à $\theta$, nous obtenons l'estimateur du maximum de vraisemblance,
 
 \begin{equation*}
-\hat{\theta}_{MV} = \underset{\theta}{\operatorname{arg\,max}}  l_{\theta}
+\hat{\theta}_{MV} = \underset{\theta}{\operatorname{arg\,max}} ~ l_{\theta}
 \end{equation*} 
 
 \subsubsection{Résultats}
@@ -865,7 +864,7 @@ Student & -2811,309 & (0.517,16.63)  & (5,010;1,833) & (4,974;1,328) \\
 \end{tabular}
 \end{center}
 
-Pour la méthode de maximum de vraisemblance, on constate que la copule normale est la plus appropriée (en effet, la copule de Student a certes une meilleure vraisemblance mais l'estimation du nombre de degrés de liberté n'est pas significative). Dans ce cas, on retient la copule normale, la force maximale du vent à Saint Martin en Haut suit une loi de Gumbel de paramètres($a = 5,021$, $b=1,829 $). La force maximale du vent à Echirolles suit une loi Gamma de paramètres ($shape = 4,936$ , $scale=1,337$) et le paramètre de la copule a pour estimation $\alpha=0.523$.
+Pour la méthode de maximum de vraisemblance, on constate que la copule normale est la plus appropriée (en effet, la copule de Student a certes une meilleure vraisemblance mais l'estimation du nombre de degrés de liberté n'est pas significative). Dans ce cas, on retient la copule normale, la force maximale du vent à Saint-Martin-en-Haut suit une loi de Gumbel de paramètres($a = 5,021$, $b=1,829 $). La force maximale du vent à Echirolles suit une loi Gamma de paramètres ($shape = 4,936$ , $scale=1,337$) et le paramètre de la copule a pour estimation $\alpha=0.523$.
 
 \subsection{Méthode IFM (Inference Function for Margins)}
 
@@ -874,8 +873,10 @@ Pour la méthode de maximum de vraisemblance, on constate que la copule normale 
 Joe et Xu ont proposé la méthode IFM qui consiste à estimer les paramètres séparément. En effet, la représentation en copules permet de séparer les paramètres spécifiques des distributions marginales ($\beta_1,\beta_2$) de celui de la structure de dépendance $\alpha$.
 \\ \\
 Cette méthode se déroule en deux étapes :
-\\ \\
-\text{   } \hspace{0.2cm} -Estimation des paramètres des marginales
+~\\
+\begin{itemize}
+
+\item Estimation des paramètres des marginales
  
 \begin{equation*}
 \hat{\beta_1} = \underset{\beta_1}{\operatorname{arg\,max}} \sum_{i=1}^n log f(x_i;\beta_1)
@@ -885,15 +886,18 @@ Cette méthode se déroule en deux étapes :
 \hat{\beta_2} = \underset{\beta_2}{\operatorname{arg\,max}} \sum_{i=1}^n log \text{ }g(y_i;\beta_2)
 \end{equation*}
 
--Estimation du paramètre de la copule
+\item Estimation du paramètre de la copule
 
 \begin{equation*}
 \hat{\alpha} = \underset{\alpha}{\operatorname{arg\,max}} \sum_{i=1}^n log \text{ }c\left(F(x_i;\hat{\beta}_1),G(y_i;\hat{\beta}_2);\alpha\right)
 \end{equation*}
 
+\end{itemize}
+
+
 \subsubsection{Résultats}
 
-Dans un premier temps, on estime les paramètres des marginales. Nous avons estimé que la force maximale du vent à Echirolles suivait une loi gamma ($shape=5,022$,$scale=1,83$). Celle de Saint Martin en Haut suit une loi de Gumbel ($a =4,968$,$b = 0,754$). Reste maintenant à tester les cinq copules et à estimer leurs paramètres.
+Dans un premier temps, on estime les paramètres des marginales. Nous avons estimé que la force maximale du vent à Echirolles suivait une loi gamma ($shape=5,022$,$scale=1,83$). Celle de Saint-Martin-en-Haut suit une loi de Gumbel ($a =4,968$,$b = 0,754$). Reste maintenant à tester les cinq copules et à estimer leurs paramètres.
 \\ \\
  Les log-vraisemblances correspondantes et les estimations des paramètres apparaissent dans le tableau ci-dessous.
 
@@ -920,7 +924,7 @@ Pour la méthode IFM, on constate également que la copule normale est la plus a
 \section{Test graphique d'adéquation à la copule}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Dans cette partie, nous allons nous intéresser à l'adéquation entre nos copules estimées et la copule empirique issue de nos données. Nous savons maintenant que les marginales peuvent être modélisées par une loi gumbel (Saint Martin) et une loi gamma (Echirolles). Dans un premier temps, nous allons rappeler, pour chaque copule étudiée, nos résultats d'estimation pour les quatre méthodes précédentes. 
+Dans cette partie, nous allons nous intéresser à l'adéquation entre nos copules estimées et la copule empirique issue de nos données. Nous savons maintenant que les marginales peuvent être modélisées par une loi gumbel (Saint-Martin-en-Haut) et une loi gamma (Echirolles). Dans un premier temps, nous allons rappeler, pour chaque copule étudiée, nos résultats d'estimation pour les quatre méthodes précédentes. 
 
 \begin{center}
 \begin{tabular}{| l | c | c | c | c | c |}
@@ -1056,7 +1060,7 @@ Nous venons de voir que les dépendogrammes des copules normale et de Student so
 
 En comparant le Khi-plot de la copule de Clayton estimée avec celui obtenu pour la copule empirique, on peut apercevoir que les points se répartissent du même côté de l'axe des ordonnées (du côté positif) exprimant ainsi une dépendance positive dans les deux cas. Cependant, du côté positif de l'axe des abscisses, le nuage de points semble se séparer en deux pour le Khi-plot de la copule de Clayton estimée. Ceci n'est pas observé sur le Khi-plot de la copule empirique. De plus, les valeurs aux extrêmes en abscisse sont autour de $0,1$ pour le graphe concernant la copule empirique alors que ces valeurs sont proches de zéro voire négatives pour la figure concernant la copule de Clayton estimée.
 
-Le Khi-plot de la copule de Gumbel estimée présente plusieurs différences par rapport au Khi-plot obtenu avec la copule empirique. Certes, nous avons une répartition des points semblables. Le nuage de points est incurvée de la même manière du coté des valeurs positives des ordonnées. Cependant, il atteint une valeur maximale supérieur à $0,3$ et est beaucoup trop "pentu". De plus, nous avons toujours une sorte de séparation en deux du nuage de points pour les valeurs positives en abscisse. Mais, cela est beaucoup moins prononcé que pour le Khi-plot de la copule de Clayton précédent.
+Le Khi-plot de la copule de Gumbel estimée présente plusieurs différences par rapport au Khi-plot obtenu avec la copule empirique. Certes, nous avons une répartition des points semblables. Le nuage de points est incurvé de la même manière du coté des valeurs positives des ordonnées. Cependant, il atteint une valeur maximale supérieur à $0,3$ et est beaucoup trop "pentu". De plus, nous avons toujours une sorte de séparation en deux du nuage de points pour les valeurs positives en abscisse. Mais, cela est beaucoup moins prononcé que pour le Khi-plot de la copule de Clayton précédent.
 
 Bien que la forme du graphe du Khi-plot de la copule de Frank estimée soit proche de celle du graphe du Khi-plot de la copule empirique, on peut aussi remarquer plusieurs différences importantes. Tout d'abord, le Khi-plot de la copule de Frank estimée est également trop "pentu" par rapport à celui de la copule empirique. Les valeurs aux extrêmes ont une ordonnée autour de $0$ et le maximum en ordonnée dépasse les $0,3$ alors que, pour le graphe de la copule empirique, la valeur maximale en ordonnée est autour de $0,3$ et les valeurs aux extrêmes en abscisse sont autour de $0,1$.
 
@@ -1111,8 +1115,8 @@ Pour cette étude sur les K-plots, celui concernant la copule de Gumbel estimée
 
 Le test de Cramér-von Mises est un test permettant de comparer des distributions. Ce test consiste à calculer la somme des carrés des écarts en valeur absolue entre les fonctions de répartition. Notons $S_F^2$ cette somme, la statistique est alors définie comme suit:
 $$T = \frac{nmS_F^2}{n + m} $$
-avec n et m le nombre d'observation des deux groupes. \\
-Pour un test bilatéral, on rejette $H_0$ au niveau de signification $5\%$ (resp. $1\%$) si $T$ est supérieure à $0.461$ (resp. $0.743$).\\
+avec $n$ et $m$ le nombre d'observation des deux groupes. \\
+Pour un test bilatéral, on rejette $H_0$ au niveau de signification $5\%$ (resp. $1\%$) si $T$ est supérieure à $0,461$ (resp. $0,743$).\\
 Ce test est souvent plus puissant que le test de Kolmogorov-Smirnov et est également plus facile à utiliser du fait de la bonne approximation qui évite le recours à des tables.
 
 \subsection{Estimation du seuil critique par bootstrap paramétrique}
@@ -1124,23 +1128,23 @@ $$
 Avec $C_{\theta}$ la famille étudiée de copules.
 En utilisant les mêmes notations que dans le cours, on rejette l'hypothèse nulle si $D_n > L$. \\
 
-Dans la situation où la famille étudiée est la famille des copules de Clayton, on obtient, avec un seuil de $0,05$, $D_n = 0,1319 > 0,0354 = L$. De plus, la p-value pour cette statistique de Cramer-Von Mises vaut $0$. Avec la fonction \textit{gofCopula} de R, on obtient une p-value de $0,0005$. 
-Nous signalons que nous avons codé nous-mêmes l'algorithme du bootstrap paramétrique, la fonction \textit{gofCopula} de R nous permet seulement de vérifier les résultats de notre algorithme.
+Dans la situation où la famille étudiée est la famille des copules de Clayton, on obtient, avec un seuil de $0,05$, $D_n = 0,1319 > 0,0354 = L$. De plus, la p-value pour cette statistique de Cramer-Von Mises vaut $0$. Avec la fonction \lstinline!gofCopula! de $R$, on obtient une p-value de $0,0005$. 
+Nous signalons que nous avons codé nous-mêmes l'algorithme du bootstrap paramétrique, la fonction \lstinline!gofCopula! de $R$ nous permet seulement de vérifier les résultats de notre algorithme.
 La copule empirique ne fait donc pas partie de la famille des copules de Clayton.
 
-En appliquant l'algorithme du bootstrap paramétrique pour la famille des copules de Gumbel, on obtient, pour un seuil de 0,05, $D_n = 0,0383 > 0,0301 = L$. On obtient une p-value de $0,01$. Avec la fonction \textit{gofCopula} de R, on obtient une p-value de $0,02547$. 
+En appliquant l'algorithme du bootstrap paramétrique pour la famille des copules de Gumbel, on obtient, pour un seuil de 0,05, $D_n = 0,0383 > 0,0301 = L$. On obtient une p-value de $0,01$. Avec la fonction \lstinline!gofCopula!, on obtient une p-value de $0,02547$. 
 Ainsi, on rejette l'hypothèse nulle et on ne peut pas conclure que notre copule empirique fasse partie de la famille des copules de Gumbel.
 
-Pour la famille des copules de Frank, on obtient $D_n = 0,051 > 0,027 = L$, pour un seuil de $0,05$. La p-value est nulle. Avec la fonction \textit{gofCopula} de R, on obtient une p-value de $0,0015$. 
+Pour la famille des copules de Frank, on obtient $D_n = 0,051 > 0,027 = L$, pour un seuil de $0,05$. La p-value est nulle. Avec la fonction \lstinline!gofCopula!, on obtient une p-value de $0,0015$. 
 Ainsi, on rejette l'hypothèse nulle et on conclut que la copule empirique ne fait pas partie de la famille des copules de Frank.
 
-L'algorithme du bootstrap paramétrique appliqué à la famille des copules normales va nous permettre d'affirmer ou non si la copule empirique fait partie de la famille des copules normales. En sortie de cet algorithme, on a, pour un seuil de $0,05$, $D_n = 0,0280 < 0,0302 = L$. De plus, on obtient une p-value de $0,07$. Avec la fonction \textit{gofCopula} de R, on obtient une p-value de $0,1034$. 
+L'algorithme du bootstrap paramétrique appliqué à la famille des copules normales va nous permettre d'affirmer ou non si la copule empirique fait partie de la famille des copules normales. En sortie de cet algorithme, on a, pour un seuil de $0,05$, $D_n = 0,0280 < 0,0302 = L$. De plus, on obtient une p-value de $0,07$. Avec la fonction \lstinline!gofCopula!, on obtient une p-value de $0,1034$. 
 On accepte ainsi l'hypothèse nulle et la copule empirique appartient bien à la famille des copules normales.
 
-Pour la famille des copules de Student, il n'a pas été possible d'appliquer cet algorithme. En effet, le deuxième paramètre de cette famille (nombre de degrés de libertés) pose un souci dans l'application du bootstrap. \\ \\
+Pour la famille des copules de Student, il n'a pas été possible d'appliquer cet algorithme. En effet, le deuxième paramètre de cette famille (nombre de degrés de libertés) pose un souci dans l'application du bootstrap. \\ 
 
 
-En conclusion de tout ces tests sur les différentes copules estimées, on peut considérer que la modélisation de la dépendance entre nos deux séries de données par notre copule normale estimée est la modélisation la plus satisfaisante. En effet, cette copule présente le Khi-plot le plus proche du Khi-plot empirique, un K-plot assez ressemblant avec l'empirique. De plus, la famille des copules normales est la seule famille à laquelle la copule empirique appartient, selon notre test avec le bootstrap paramétrique.
+En conclusion de tous ces tests sur les différentes copules estimées, on peut considérer que la modélisation de la dépendance entre nos deux séries de données par notre copule normale estimée est la modélisation la plus satisfaisante. En effet, cette copule présente le Khi-plot le plus proche du Khi-plot empirique, un K-plot assez ressemblant avec l'empirique. De plus, la famille des copules normales est la seule famille à laquelle la copule empirique appartient, selon notre test avec le bootstrap paramétrique.
 
 
 
